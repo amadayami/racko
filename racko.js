@@ -54,15 +54,6 @@ function checkWinner(hand){
 	return true;
 }
 
-//Picks a random card from the deck, removes it from the deck and
-//returns the card
-function pullCard(deck){
-	let randInd = Math.floor(Math.random()*(deck.length));
-	let card = deck[randInt];
-	deck.splice(randInd, 1);
-	return card;
-}
-
 //Creates a game based on player input
 function gameCreation(){
 	console.log("Hey! Welcome to Racko :)");
@@ -115,10 +106,47 @@ function boardToString(player, discard, playDeck){
 }
 
 function play(){
-	let playDeck, discardPile;
+	let drawPile, discardPile;
 	let player1, player2;
-	[playDeck, discardPile, player1, player2] = gameCreation();
+	[drawPile, discardPile, player1, player2] = gameCreation();
 	console.log("Game created, dealing cards...");
-	[player1.hand, playDeck] = dealCards(player1.hand, playDeck);
-	[player2.hand, playDeck] = dealCards(player2.hand, playDeck);
+	[player1.hand, playDeck] = dealCards(player1.hand, drawPile);
+	[player2.hand, playDeck] = dealCards(player2.hand, drawPile);
+	
+	let isWinner = false;
+	let winner;
+	let turn = 1;
+	let currentPlayer;
+	while(!isWinner){
+		if(turn % 2 == 1) currentPlayer = player1;
+		else if(turn % 2 == 0) currentPlayer = player2;
+		console.log(currentPlayer);
+		console.log(drawPile);
+		console.log(discardPile);
+		
+		let currentCard;
+		if(drawPile.length === 0){
+			[drawPile, discardPile] = [discardPile, drawPile];
+			drawPile = shuffle(drawPile);
+			currentCard = drawPile.pop();
+		}
+		else if(discardPile.length === 0){
+			currentCard = drawPile.pop();
+		}
+		else{
+			let pileChoice = prompt("Draw or discard pile?");
+			if(pileChoice.toLowerCase() === "draw"){
+				currentCard = drawPile.pop();
+			}
+			else if(pileChoice.toLowerCase() === "discard"){
+				currentCard = discardPile.pop();
+			}
+			else{
+				currentCard = drawPile.pop();
+			}
+		}
+		console.log(currentCard);
+		//need to remove, i just want to make sure i don't infinite loop rn
+		isWinner = true;
+	}
 }
