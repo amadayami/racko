@@ -151,7 +151,31 @@ function play(){
 			}
 		}
 		console.log(`Current card: ${currentCard}`);
-		//need to remove, i just want to make sure i don't infinite loop rn
-		isWinner = true;
+		
+		let playerMoving = true;
+		while(playerMoving){
+			let playerMove = prompt("Discard or add to your hand?");
+			if(playerMove.toLowerCase() === "discard"){
+				discardPile.push(currentCard);
+				playerMoving = false;
+			}
+			else if(playerMove.toLowerCase() === "add"){
+				let switchCard = Number(prompt("Which number would you like to switch?"));
+				let cardIndex = currentPlayer.hand.indexOf(switchCard);
+				currentPlayer.hand[cardIndex] = currentCard;
+				currentCard = switchCard;
+				discardPile.push(switchCard);
+				playerMoving = false;
+			}
+			else if("penis"){
+				console.log(">:(");
+			}
+			else{
+				console.log("invalid move! try again!");
+			}
+		}
+		isWinner = checkWinner(currentPlayer.hand);
+		turn++;
 	}
+	console.log(currentPlayer.name + " wins!");
 }
