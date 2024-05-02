@@ -139,7 +139,7 @@ function play(){
 			currentCard = drawPile.pop();
 		}
 		else{
-			let pileChoice = prompt("Draw or discard pile?");
+			let pileChoice = prompt("Draw or discard pile? (draw/discard)");
 			if(pileChoice.toLowerCase() === "draw"){
 				currentCard = drawPile.pop();
 			}
@@ -147,6 +147,7 @@ function play(){
 				currentCard = discardPile.pop();
 			}
 			else{
+				console.log("defaulting to draw pile");
 				currentCard = drawPile.pop();
 			}
 		}
@@ -161,6 +162,10 @@ function play(){
 			}
 			else if(playerMove.toLowerCase() === "add"){
 				let switchCard = Number(prompt("Which number would you like to switch?"));
+				if(!currentPlayer.hand.includes(switchCard)){
+					console.log("You don't have that card!");
+					continue;
+				}
 				let cardIndex = currentPlayer.hand.indexOf(switchCard);
 				currentPlayer.hand[cardIndex] = currentCard;
 				currentCard = switchCard;
