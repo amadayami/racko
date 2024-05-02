@@ -19,6 +19,15 @@ function shuffle(deck){
 	return deck;
 }
 
+//Creates a new player
+function createPlayer(isComputer, name, hand){
+	return player = {
+		isComputer: isComputer,
+		name: name,
+		hand: hand
+	}
+}
+
 //Creates a new hand for a player based on the given length
 //Standard Racko hand is 10 cards
 function createHand(len){
@@ -75,6 +84,9 @@ function gameCreation(){
 		console.log("Great!");
 	}
 	
+	let player1Name = prompt("What is the first player's name?");
+	let player2Name = prompt("What is the second player's name?");
+	
 	let deckLength = prompt("How many cards would you like to play with? Min: 60", 60);
 	let handLength = prompt("How many cards for each player? Min: 10", 10);
 	if(deckLength < 60 || handLength < 10){
@@ -92,10 +104,14 @@ function gameCreation(){
 	let discardPile = createDeck(0);
 	
 	//only going to support two players for now
-	let player1 = createHand(handLength);
-	let player2 = createHand(handLength);
-	
+	let player1 = createPlayer(false, player1Name, createHand(handLength));
+	let player2 = createPlayer(false, player2Name, createHand(handLength));
 	return [playDeck, discardPile, player1, player2];
+}
+
+function boardToString(player, discard, playDeck){
+	//i want to display the player's hand, the top card on the
+	//discard pile, and the number of cards in the play deck
 }
 
 function play(){
@@ -103,6 +119,6 @@ function play(){
 	let player1, player2;
 	[playDeck, discardPile, player1, player2] = gameCreation();
 	console.log("Game created, dealing cards...");
-	[player1, playDeck] = dealCards(player1, playDeck);
-	[player2, playDeck] = dealCards(player2, playDeck);
+	[player1.hand, playDeck] = dealCards(player1.hand, playDeck);
+	[player2.hand, playDeck] = dealCards(player2.hand, playDeck);
 }
