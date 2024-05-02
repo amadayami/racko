@@ -32,10 +32,12 @@ function createPlayer(isComputer, name, hand){
 //Standard Racko hand is 10 cards
 function createHand(len){
 	let hand = new Array(len);
+	console.log(hand);
 	return hand;
 }
 
-//Deals cards to two a hand and a deck
+//Deals cards given a number of cards and a deck
+//NOTE: should just have it take the top ones instead of random ones
 function dealCards(hand, deck){
 	for(let i = 0; i < hand.length; i++){
 		let randInd = Math.floor(Math.random()*(deck.length));
@@ -78,8 +80,8 @@ function gameCreation(){
 	let player1Name = prompt("What is the first player's name?");
 	let player2Name = prompt("What is the second player's name?");
 	
-	let deckLength = prompt("How many cards would you like to play with? Min: 60", 60);
-	let handLength = prompt("How many cards for each player? Min: 10", 10);
+	let deckLength = Number(prompt("How many cards would you like to play with? Min: 60", 60));
+	let handLength = Number(prompt("How many cards for each player? Min: 10", 10));
 	if(deckLength < 60 || handLength < 10){
 		console.log("Deck or hand length not at minimum");
 		return;
@@ -95,14 +97,20 @@ function gameCreation(){
 	let discardPile = createDeck(0);
 	
 	//only going to support two players for now
-	let player1 = createPlayer(false, player1Name, createHand(handLength));
-	let player2 = createPlayer(false, player2Name, createHand(handLength));
+	let player1 = createPlayer(false, player1Name, Array(handLength));
+	let player2 = createPlayer(false, player2Name, Array(handLength));
 	return [playDeck, discardPile, player1, player2];
 }
 
-function boardToString(player, discard, playDeck){
+function boardToString(player, discard, draw){
 	//i want to display the player's hand, the top card on the
 	//discard pile, and the number of cards in the play deck
+	let dd;
+	if(discard.length == 0){
+		dd = 'x';
+	}
+	else dd = discard[discard.length-1];
+	return `Player: ${player.name}\nDiscard: ${dd} Cards in draw: ${draw.length}\nYour hand: ${player.hand}`;
 }
 
 function play(){
@@ -112,7 +120,6 @@ function play(){
 	console.log("Game created, dealing cards...");
 	[player1.hand, playDeck] = dealCards(player1.hand, drawPile);
 	[player2.hand, playDeck] = dealCards(player2.hand, drawPile);
-	
 	let isWinner = false;
 	let winner;
 	let turn = 1;
@@ -120,9 +127,7 @@ function play(){
 	while(!isWinner){
 		if(turn % 2 == 1) currentPlayer = player1;
 		else if(turn % 2 == 0) currentPlayer = player2;
-		console.log(currentPlayer);
-		console.log(drawPile);
-		console.log(discardPile);
+		console.log(boardToString(currentPlayer, discardPile, drawPile));
 		
 		let currentCard;
 		if(drawPile.length === 0){
@@ -145,7 +150,7 @@ function play(){
 				currentCard = drawPile.pop();
 			}
 		}
-		console.log(currentCard);
+		console.log(`Current card: ${currentCard}`);
 		//need to remove, i just want to make sure i don't infinite loop rn
 		isWinner = true;
 	}
