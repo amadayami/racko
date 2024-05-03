@@ -24,7 +24,8 @@ function createPlayer(isComputer, name, hand){
 	return player = {
 		isComputer: isComputer,
 		name: name,
-		hand: hand
+		hand: hand,
+		points: 0;
 	}
 }
 
@@ -54,6 +55,30 @@ function checkWinner(hand){
 		if(hand[i] > hand[i+1]) return false;
 	}
 	return true;
+}
+
+//Checks a given array of players and returns an array of players with
+//over 500 points
+function checkForWinners(playerArray){
+	let winners = [];
+	for(player of playerArray){
+		if(player.points > 500){
+			winners.push(player);
+		}
+	}
+	return winners;
+}
+
+//Tallies the number of cards in order and returns the value of the
+//cards
+function calculatePoints(hand){
+	//You automatically get 5 points for having one card
+	let count = 5;
+	for(let i = 0; i < hand.length - 1; i++){
+		if(hand[i] < hand[i+1]) count += 5;
+		else break;
+	}
+	return count;
 }
 
 //Creates a game based on player input
@@ -110,7 +135,7 @@ function boardToString(player, discard, draw){
 		dd = 'x';
 	}
 	else dd = discard[discard.length-1];
-	return `Player: ${player.name}\nDiscard: ${dd} Cards in draw: ${draw.length}\nYour hand: ${player.hand}`;
+	return `Player: ${player.name} | Points: ${player.points}\nDiscard: ${dd} Cards in draw: ${draw.length}\nYour hand: ${player.hand}`;
 }
 
 function play(){
@@ -182,5 +207,6 @@ function play(){
 		isWinner = checkWinner(currentPlayer.hand);
 		turn++;
 	}
-	console.log(currentPlayer.name + " wins!");
+	console.log(currentPlayer.name + " wins this round!");
+	
 }
