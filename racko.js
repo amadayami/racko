@@ -25,7 +25,7 @@ function createPlayer(isComputer, name, hand){
 		isComputer: isComputer,
 		name: name,
 		hand: hand,
-		points: 0;
+		points: 0
 	}
 }
 
@@ -138,11 +138,8 @@ function boardToString(player, discard, draw){
 	return `Player: ${player.name} | Points: ${player.points}\nDiscard: ${dd} Cards in draw: ${draw.length}\nYour hand: ${player.hand}`;
 }
 
-function play(){
-	let drawPile, discardPile;
-	let player1, player2;
-	[drawPile, discardPile, player1, player2] = gameCreation();
-	console.log("Game created, dealing cards...");
+function play(drawPile, discardPile, player1, player2){
+	console.log("Dealing cards...");
 	[player1.hand, playDeck] = dealCards(player1.hand, drawPile);
 	[player2.hand, playDeck] = dealCards(player2.hand, drawPile);
 	let isWinner = false;
@@ -197,9 +194,6 @@ function play(){
 				discardPile.push(switchCard);
 				playerMoving = false;
 			}
-			else if("penis"){
-				console.log(">:(");
-			}
 			else{
 				console.log("invalid move! try again!");
 			}
@@ -208,5 +202,37 @@ function play(){
 		turn++;
 	}
 	console.log(currentPlayer.name + " wins this round!");
-	
+	currentPlayer.points += 75;
+	//need to add points for the other player(s)
+}
+
+function game(){
+	let drawPile, discardPile;
+	let player1, player2;
+	[drawPile, discardPile, player1, player2] = gameCreation();
+	console.log("Game created!");
+	let winner = false;
+	let winners = [];
+	while(!winner){
+		play(drawPile, discardPile, player1, player2);
+		winners = checkForWinners([player1, player2]);
+		if(winners.length > 0){
+			if(winners.length = 1){
+				console.log(`${winners[0].name} wins the game!`);
+			}
+			else{
+				let str = "";
+				for(let i = 0; i < winners.length; i++){
+					if(i === winners.length-1){
+						str += winners[i].name;
+					}
+					else{
+						str += `${winners[i].name} and `;
+					}
+				}
+				console.log(`${str} win the game!`);
+			}
+			winner = true;
+		}
+	}
 }
