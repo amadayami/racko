@@ -55,12 +55,12 @@ function computerMove(hand, discard, draw){
 	let slot;
 	
 	let currentCard;
-	if(drawPile.length === 0){
+	if(draw.length === 0){
 		[draw, discard] = [discard, draw];
 		draw = draw.shuffle(draw);
 		currentCard = draw.pop();
 	}
-	else if(discardPile.length === 0){
+	else if(discard.length === 0){
 		currentCard = draw.pop();
 	}
 	else{
@@ -75,7 +75,7 @@ function computerMove(hand, discard, draw){
 			//put the current card in the hand and put the switched card into the discard pile
 			let switchCard = hand[slot-1];
 			hand[slot-1] = currentCard;
-			discardPile.push(switchCard);
+			discard.push(switchCard);
 			return [hand, discard, draw];
 		}
 	}
@@ -87,7 +87,7 @@ function computerMove(hand, discard, draw){
 	else{
 		let switchCard = hand[slot-1];
 		hand[slot-1] = currentCard;
-		discardPile.push(switchCard);
+		discard.push(switchCard);
 	}
 	return [hand, discard, draw];
 }
@@ -131,8 +131,7 @@ function gameCreation(){
 	
 	let players = prompt("How many people are playing today?", 2);
 	if(players == 1){
-		console.log("Computer player support to be added");
-		return;
+		console.log("Second player will be a computer!");
 	}
 	else if(players > 2){
 		console.log("Sorry only two players for now");
@@ -172,7 +171,9 @@ function gameCreation(){
 	
 	//only going to support two players for now
 	let player1 = createPlayer(false, player1Name, Array(handLength));
-	let player2 = createPlayer(false, player2Name, Array(handLength));
+	let player2;
+	if(players == 1) player2 = createPlayer(true, player2Name, Array(handLength));
+	else player2 = createPlayer(false, player2Name, Array(handLength));
 	return [playDeck, discardPile, player1, player2];
 }
 
@@ -199,6 +200,12 @@ function play(drawPile, discardPile, player1, player2){
 		if(turn % 2 == 1) currentPlayer = player1;
 		else if(turn % 2 == 0) currentPlayer = player2;
 		console.log(boardToString(currentPlayer, discardPile, drawPile));
+		if(currentPlayer.isComputer === true){
+			computerMove(currentPlayer.hand, discardPile, drawPile);
+			isWinner = checkWinner(currentPlayer.hand);
+			turn++;
+			continue;
+		}
 		
 		let currentCard;
 		if(drawPile.length === 0){
