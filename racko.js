@@ -48,6 +48,50 @@ function dealCards(hand, deck){
 	return [hand, deck];
 }
 
+//this is a simplified way of how i approach the game
+function computerMove(hand, discard, draw){
+	let handLength = hand.length;
+	let deckLength = handLength * 6;
+	let slot;
+	
+	let currentCard;
+	if(drawPile.length === 0){
+		[draw, discard] = [discard, draw];
+		draw = draw.shuffle(draw);
+		currentCard = draw.pop();
+	}
+	else if(discardPile.length === 0){
+		currentCard = draw.pop();
+	}
+	else{
+		//the computer checks for a spot for the discard card, else draws
+		currentCard = discard[discard.length-1];
+		slot = Math.ceil(currentCard/6);
+		if(hand[slot-1]/6 === slot){
+			//then we draw and try again
+			currentCard = draw.pop();
+		}
+		else{
+			//put the current card in the hand and put the switched card into the discard pile
+			let switchCard = hand[slot-1];
+			hand[slot-1] = currentCard;
+			discardPile.push(switchCard);
+			return [hand, discard, draw];
+		}
+	}
+	//current card is recently drawn
+	slot = Math.ceil(currentCard/6);
+	if(hand[slot-1]/6 === slot){
+		discard.push(currentCard);
+	}
+	else{
+		let switchCard = hand[slot-1];
+		hand[slot-1] = currentCard;
+		discardPile.push(switchCard);
+	}
+	return [hand, discard, draw];
+}
+
 //Checks if a given hand is a winner, cards should increase in value
 //starting from the first index in the hand array
 function checkWinner(hand){
