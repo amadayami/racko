@@ -67,7 +67,7 @@ function computerMove(hand, discard, draw){
 		//the computer checks for a spot for the discard card, else draws
 		currentCard = discard[discard.length-1];
 		slot = Math.ceil(currentCard/6);
-		if(hand[slot-1]/6 === slot){
+		if(Math.ceil(hand[slot-1]/6) === slot){
 			//then we draw and try again
 			currentCard = draw.pop();
 		}
@@ -81,7 +81,7 @@ function computerMove(hand, discard, draw){
 	}
 	//current card is recently drawn
 	slot = Math.ceil(currentCard/6);
-	if(hand[slot-1]/6 === slot){
+	if(Math.ceil(hand[slot-1]/6) === slot){
 		discard.push(currentCard);
 	}
 	else{
