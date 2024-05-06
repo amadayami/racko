@@ -105,17 +105,22 @@ function gameCreation(){
 	let player1Name = prompt("What is the first player's name?");
 	let player2Name = prompt("What is the second player's name?");
 	
-	let deckLength = Number(prompt("How many cards would you like to play with? Min: 60", 60));
-	let handLength = Number(prompt("How many cards for each player? Min: 10", 10));
-	if(deckLength < 60 || handLength < 10){
-		console.log("Deck or hand length not at minimum");
-		return;
+	console.log(`Hi ${player1Name} and ${player2Name}!`);
+	
+	let gameType = prompt("Would you like to play standard or double Racko?")
+	if(gameType.toLowerCase() === "standard"){
+		deckLength = 60;
+		handLength = 10;
 	}
-	if(handLength * players > deckLength){
-		console.log("Not enough cards to play!");
-		return;
+	else if(gameType.toLowerCase() === "double"){
+		deckLength = 120;
+		handLength = 20;
 	}
-	console.log("Can do!");
+	else{
+		console.log("invalid choice, defaulting to standard...");
+		deckLength = 60;
+		handLength = 10;
+	}
 	
 	let playDeck = createDeck(deckLength);
 	playDeck = shuffle(playDeck);
