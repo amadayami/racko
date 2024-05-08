@@ -76,6 +76,7 @@ function computerMove(hand, discard, draw){
 			let switchCard = hand[slot-1];
 			hand[slot-1] = currentCard;
 			discard.push(switchCard);
+			console.log(`Updated hand: ${hand}`);
 			return [hand, discard, draw];
 		}
 	}
@@ -89,6 +90,7 @@ function computerMove(hand, discard, draw){
 		hand[slot-1] = currentCard;
 		discard.push(switchCard);
 	}
+	console.log(`Updated hand: ${hand}`);
 	return [hand, discard, draw];
 }
 
@@ -129,27 +131,6 @@ function calculatePoints(hand){
 function gameCreation(){
 	console.log("Hey! Welcome to Racko :)");
 	
-	let players = prompt("How many people are playing today?", 2);
-	if(players == 1){
-		console.log("Second player will be a computer!");
-	}
-	else if(players > 2){
-		console.log("Sorry only two players for now");
-		return;
-	}
-	else if(players == 0){
-		console.log("No one wins :(");
-		return;
-	}
-	else{
-		console.log("Great!");
-	}
-	
-	let player1Name = prompt("What is the first player's name?");
-	let player2Name = prompt("What is the second player's name?");
-	
-	console.log(`Hi ${player1Name} and ${player2Name}!`);
-	
 	let gameType = prompt("Would you like to play standard or double Racko?")
 	if(gameType.toLowerCase() === "standard"){
 		deckLength = 60;
@@ -169,12 +150,36 @@ function gameCreation(){
 	playDeck = shuffle(playDeck);
 	let discardPile = createDeck(0);
 	
-	//only going to support two players for now
-	let player1 = createPlayer(false, player1Name, Array(handLength));
-	let player2;
-	if(players == 1) player2 = createPlayer(true, player2Name, Array(handLength));
-	else player2 = createPlayer(false, player2Name, Array(handLength));
-	return [playDeck, discardPile, player1, player2];
+	let players = prompt("How many players today?", 2);
+	if(players < 2){
+		console.log("Need at least 2 players!");
+		return;
+	}
+	else if(players > 4){
+		console.log("Max players is 4");
+		return;
+	}
+	else if(players === 0){
+		console.log("No one wins :(");
+		return;
+	}
+	else{
+		console.log("Great!");
+	}
+	
+	let playersArray = [];
+	for(let i = 1; i <= players; i++){
+		let playerName = prompt("What is player " + i + "'s name?");
+		let computer = prompt("Are they a computer? (y/n)");
+		if(computer === "yes" || computer === "y"){
+			playersArray.push(createPlayer(true, playerName, Array(handLength)));
+		}
+		else{
+			playersArray.push(createPlayer(false, playerName, Array(handLength)));
+		}
+	}
+	
+	return [playDeck, discardPile, playersArray];
 }
 
 function boardToString(player, discard, draw){
@@ -188,17 +193,17 @@ function boardToString(player, discard, draw){
 	return `Player: ${player.name} | Points: ${player.points}\nDiscard: ${dd} Cards in draw: ${draw.length}\nYour hand: ${player.hand}`;
 }
 
-function play(drawPile, discardPile, player1, player2){
+function play(drawPile, discardPile, players){
 	console.log("Dealing cards...");
-	[player1.hand, playDeck] = dealCards(player1.hand, drawPile);
-	[player2.hand, playDeck] = dealCards(player2.hand, drawPile);
+	for(player of players){
+		[player.hand, playDeck] = dealCards(player.hand, drawPile);
+	}
 	let isWinner = false;
 	let winner;
-	let turn = 1;
+	let turn = 0;
 	let currentPlayer;
 	while(!isWinner){
-		if(turn % 2 == 1) currentPlayer = player1;
-		else if(turn % 2 == 0) currentPlayer = player2;
+		currentPlayer = players[turn%players.length]
 		console.log(boardToString(currentPlayer, discardPile, drawPile));
 		if(currentPlayer.isComputer === true){
 			computerMove(currentPlayer.hand, discardPile, drawPile);
@@ -264,14 +269,14 @@ function play(drawPile, discardPile, player1, player2){
 
 function game(){
 	let drawPile, discardPile;
-	let player1, player2;
-	[drawPile, discardPile, player1, player2] = gameCreation();
+	let players;
+	[drawPile, discardPile, players] = gameCreation();
 	console.log("Game created!");
 	let winner = false;
 	let winners = [];
 	while(!winner){
-		play(drawPile, discardPile, player1, player2);
-		winners = checkForWinners([player1, player2]);
+		play(drawPile, discardPile, players);
+		winners = checkForWinners(players);
 		if(winners.length > 0){
 			if(winners.length = 1){
 				console.log(`${winners[0].name} wins the game!`);
