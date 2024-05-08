@@ -179,6 +179,12 @@ function gameCreation(){
 		}
 	}
 	
+	const isComputerPlayer = (player) => player.isComputer === true;
+	if(playersArray.every(isComputerPlayer)){
+		console.log("Have to have at least one human!");
+		return;
+	}
+	
 	return [playDeck, discardPile, playersArray];
 }
 
