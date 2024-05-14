@@ -39,8 +39,8 @@ function createHand(len){
 
 //Deals cards given a number of cards and a deck
 //NOTE: should just have it take the top ones instead of random ones
-function dealCards(hand, deck){
-	for(let i = 0; i < hand.length; i++){
+function dealCards(hand, deck, handLength){
+	for(let i = 0; i < handLength; i++){
 		let randInd = Math.floor(Math.random()*(deck.length));
 		hand[i] = deck[randInd];
 		deck.splice(randInd, 1);
@@ -50,8 +50,6 @@ function dealCards(hand, deck){
 
 //this is a simplified way of how i approach the game
 function computerMove(hand, discard, draw){
-	let handLength = hand.length;
-	let deckLength = handLength * 6;
 	let slot;
 	
 	let currentCard;
@@ -59,17 +57,40 @@ function computerMove(hand, discard, draw){
 		[draw, discard] = [discard, draw];
 		draw = draw.shuffle(draw);
 		currentCard = draw.pop();
+		console.log("New card drawn: " + currentCard);
 	}
 	else if(discard.length === 0){
 		currentCard = draw.pop();
+		console.log("New card drawn: " + currentCard);
 	}
 	else{
 		//the computer checks for a spot for the discard card, else draws
-		currentCard = discard[discard.length-1];
+		currentCard = discard.pop();
 		slot = Math.ceil(currentCard/6);
+		//checks to see if the slot is already filled by a card in the appropriate slot
 		if(Math.ceil(hand[slot-1]/6) === slot){
-			//then we draw and try again
+			//if the spot is filled, then we check the surrounding spots
+			if(slot-2 >= 0 && currentCard < hand[slot-1] && Math.ceil(hand[slot-2]/6) !== slot-1){
+				console.log("below free");
+				let switchCard = hand[slot-2];
+				hand[slot-2] = currentCard;
+				discard.push(switchCard);
+				console.log(`Updated hand: ${hand}`);
+				return [hand, discard, draw];
+			}
+			else if(slot <= hand.length-1 && currentCard > hand[slot-1] && Math.ceil(hand[slot]/6) !== slot+1){
+				console.log("above free");
+				let switchCard = hand[slot];
+				hand[slot] = currentCard;
+				discard.push(switchCard);
+				console.log(`Updated hand: ${hand}`);
+				return [hand, discard, draw];
+			}
+			
+			//else we get a new card from the draw pile
+			discard.push(currentCard);
 			currentCard = draw.pop();
+			console.log("New card drawn: " + currentCard);
 		}
 		else{
 			//put the current card in the hand and put the switched card into the discard pile
@@ -83,7 +104,17 @@ function computerMove(hand, discard, draw){
 	//current card is recently drawn
 	slot = Math.ceil(currentCard/6);
 	if(Math.ceil(hand[slot-1]/6) === slot){
-		discard.push(currentCard);
+		if(slot-2 >= 0 && currentCard < hand[slot-1] && Math.ceil(hand[slot-2]/6 !== slot-1)){
+			let switchCard = hand[slot-2];
+			hand[slot-2] = currentCard;
+			discard.push(switchCard);
+		}
+		else if(slot <= hand.length-1 && currentCard > hand[slot-1] && Math.ceil(hand[slot]/6 !== slot+1)){
+			let switchCard = hand[slot];
+			hand[slot] = currentCard;
+			discard.push(switchCard);
+		}
+		else discard.push(currentCard);
 	}
 	else{
 		let switchCard = hand[slot-1];
@@ -131,7 +162,7 @@ function calculatePoints(hand){
 function gameCreation(){
 	console.log("Hey! Welcome to Racko :)");
 	
-	let gameType = prompt("Would you like to play standard or double Racko?")
+	let gameType = prompt("Would you like to play standard or double Racko?", "standard")
 	if(gameType.toLowerCase() === "standard"){
 		deckLength = 60;
 		handLength = 10;
@@ -196,13 +227,16 @@ function boardToString(player, discard, draw){
 		dd = 'x';
 	}
 	else dd = discard[discard.length-1];
-	return `Player: ${player.name} | Points: ${player.points}\nDiscard: ${dd} Cards in draw: ${draw.length}\nYour hand: ${player.hand}`;
+	return `Player: ${player.name} | Points: ${player.points}\nDiscard: ${dd} | Cards in draw: ${draw.length} | Cards in discard: ${discard.length}\nYour hand: ${player.hand}`;
 }
 
 function play(drawPile, discardPile, players){
+	console.log("Resetting deck...");
+	[players, drawPile, discardPile] = resetBoard(players, drawPile, discardPile);
 	console.log("Dealing cards...");
+	let h = (drawPile.length)/6;
 	for(player of players){
-		[player.hand, playDeck] = dealCards(player.hand, drawPile);
+		[player.hand, drawPile] = dealCards(player.hand, drawPile, h);
 	}
 	let isWinner = false;
 	let winner;
@@ -271,6 +305,22 @@ function play(drawPile, discardPile, players){
 	console.log(currentPlayer.name + " wins this round!");
 	currentPlayer.points += 75;
 	//need to add points for the other player(s)
+	return [drawPile, discardPile, players];
+}
+
+function resetBoard(players, draw, discard){
+	draw = draw.concat(discard);
+	discard = [];
+	
+	const anyUndefined = (player) => player.hand.includes(undefined);
+	if(!players.some(anyUndefined)){
+		for(player of players){
+			draw = draw.concat(player.hand);
+			player.hand = [];
+		}
+	}
+
+	return [players, shuffle(draw), discard];
 }
 
 function game(){
@@ -281,7 +331,7 @@ function game(){
 	let winner = false;
 	let winners = [];
 	while(!winner){
-		play(drawPile, discardPile, players);
+		[drawPile, discardPile, players] = play(drawPile, discardPile, players);
 		winners = checkForWinners(players);
 		if(winners.length > 0){
 			if(winners.length = 1){
