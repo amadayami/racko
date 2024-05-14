@@ -10,3 +10,6 @@ appear. (I am working on GUI so it is easier to play!)
 - In the original version of the game, the number of cards you play with depends on how many players are playing (ex. 2 -> 40, 3 -> 50, 4 -> 60). In this version, you play with either 60 or 120 cards depending on which type of game you want to play and this is independent of number of players.
 - If you play with 120 cards, you also play with 20 cards in your hand.
 - In the original, there is also a rule that players must have at least 3 sequential cards to win a hand, but that is not included in this version.
+
+## Credits
+Custom font is [Bonk Offset](https://www.1001fonts.com/bonk-font.html) from 1001 fonts!
