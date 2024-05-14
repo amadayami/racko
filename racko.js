@@ -55,7 +55,7 @@ function computerMove(hand, discard, draw){
 	let currentCard;
 	if(draw.length === 0){
 		[draw, discard] = [discard, draw];
-		draw = draw.shuffle(draw);
+		draw = shuffle(draw);
 		currentCard = draw.pop();
 		console.log("New card drawn: " + currentCard);
 	}
