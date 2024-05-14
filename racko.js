@@ -149,9 +149,8 @@ function checkForWinners(playerArray){
 //Tallies the number of cards in order and returns the value of the
 //cards
 function calculatePoints(hand){
-	//You automatically get 5 points for having one card
 	let count = 5;
-	for(let i = 0; i < hand.length - 1; i++){
+	for(let i = 0; i < hand.length-1; i++){
 		if(hand[i] < hand[i+1]) count += 5;
 		else break;
 	}
@@ -304,7 +303,11 @@ function play(drawPile, discardPile, players){
 	}
 	console.log(currentPlayer.name + " wins this round!");
 	currentPlayer.points += 75;
-	//need to add points for the other player(s)
+	for(player of players){
+		if(player !== currentPlayer){
+			player.points = calculatePoints(player.hand);
+		}
+	}
 	return [drawPile, discardPile, players];
 }
 
