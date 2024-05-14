@@ -244,6 +244,7 @@ function play(drawPile, discardPile, players){
 	while(!isWinner){
 		currentPlayer = players[turn%players.length]
 		console.log(boardToString(currentPlayer, discardPile, drawPile));
+		let pileChoice;
 		if(currentPlayer.isComputer === true){
 			computerMove(currentPlayer.hand, discardPile, drawPile);
 			isWinner = checkWinner(currentPlayer.hand);
@@ -261,28 +262,27 @@ function play(drawPile, discardPile, players){
 			currentCard = drawPile.pop();
 		}
 		else{
-			let pileChoice = prompt("Draw or discard pile? (draw/discard)");
-			if(pileChoice.toLowerCase() === "draw"){
-				currentCard = drawPile.pop();
-			}
-			else if(pileChoice.toLowerCase() === "discard"){
-				currentCard = discardPile.pop();
-			}
-			else{
-				console.log("defaulting to draw pile");
-				currentCard = drawPile.pop();
+			let choiceMade = false;
+			while(!choiceMade){
+				pileChoice = prompt("Draw or discard pile? (draw/discard)");
+				if(pileChoice.toLowerCase() === "draw"){
+					currentCard = drawPile.pop();
+					choiceMade = true;
+				}
+				else if(pileChoice.toLowerCase() === "discard"){
+					currentCard = discardPile.pop();
+					choiceMade = true;
+				}
+				else{
+					console.log("invalid choice!");
+				}
 			}
 		}
 		console.log(`Current card: ${currentCard}`);
 		
 		let playerMoving = true;
 		while(playerMoving){
-			let playerMove = prompt("Discard or add to your hand?");
-			if(playerMove.toLowerCase() === "discard"){
-				discardPile.push(currentCard);
-				playerMoving = false;
-			}
-			else if(playerMove.toLowerCase() === "add"){
+			if(pileChoice === "discard"){
 				let switchCard = Number(prompt("Which number would you like to switch?"));
 				if(!currentPlayer.hand.includes(switchCard)){
 					console.log("You don't have that card!");
@@ -295,7 +295,26 @@ function play(drawPile, discardPile, players){
 				playerMoving = false;
 			}
 			else{
-				console.log("invalid move! try again!");
+				let playerMove = prompt("Discard or add to your hand?");
+				if(playerMove.toLowerCase() === "discard"){
+					discardPile.push(currentCard);
+					playerMoving = false;
+				}
+				else if(playerMove.toLowerCase() === "add"){
+					let switchCard = Number(prompt("Which number would you like to switch?"));
+					if(!currentPlayer.hand.includes(switchCard)){
+						console.log("You don't have that card!");
+						continue;
+					}
+					let cardIndex = currentPlayer.hand.indexOf(switchCard);
+					currentPlayer.hand[cardIndex] = currentCard;
+					currentCard = switchCard;
+					discardPile.push(switchCard);
+					playerMoving = false;
+				}
+				else{
+					console.log("invalid move! try again!");
+				}
 			}
 		}
 		isWinner = checkWinner(currentPlayer.hand);
