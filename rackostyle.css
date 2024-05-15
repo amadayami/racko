@@ -2,10 +2,84 @@
 	font-family: 'Bonk-Offset';
 	src: url("Bonkoff.ttf");
 }
+@font-face{
+	font-family: "Atkinson";
+	src: url("Atkinson-Hyperlegible-Regular-102.ttf");
+}
+@font-face{
+	font-family: "Atkinson-Bold";
+	src: url("Atkinson-Hyperlegible-Bold-102.ttf")
+}
+
 #title{
 	font-family: "Bonk-Offset";
 	text-align: center;
 	font-size: 60px;
 	padding-top: 0px;
+	padding-bottom: 0px;
 	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#board{
+	width: 90vw;
+	height: 35vw;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	border: 1px solid #000000;
+}
+
+#boardHeader{
+	display: flex;
+}
+
+#boardHeader > div{
+	float:left;
+	width: 33.3%;
+}
+
+.button{
+	font-family: "Atkinson-Bold";
+	font-size: 24px;
+	color: white;
+	background-color: #f0332f;
+	padding: 5px;
+	border: none;
+	&:hover{
+		
+	}
+}
+
+#newGame{
+	float: right;
+	margin-top: 5px;
+	margin-right: 5px;
+}
+
+#rulebook{
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+#playerName{
+	text-align: center;
+	font-size: 24px;
+	margin-top: 5px;
+	margin-bottom: 0px;
+}
+
+#playerPoints{
+	text-align: center;
+	margin-top: 0px;
+}
+
+#rackoCanvas{
+	width: 90vw;
+	height: 35vw;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
 }
