@@ -1,14 +1,14 @@
 @font-face{
 	font-family: 'Bonk-Offset';
-	src: url("Bonkoff.ttf");
+	src: url("fonts/Bonkoff.ttf");
 }
 @font-face{
 	font-family: "Atkinson";
-	src: url("Atkinson-Hyperlegible-Regular-102.ttf");
+	src: url("fonts/Atkinson-Hyperlegible-Regular-102.ttf");
 }
 @font-face{
 	font-family: "Atkinson-Bold";
-	src: url("Atkinson-Hyperlegible-Bold-102.ttf")
+	src: url("fonts/Atkinson-Hyperlegible-Bold-102.ttf")
 }
 
 #title{
