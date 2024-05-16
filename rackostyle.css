@@ -22,8 +22,6 @@
 }
 
 #board{
-	width: 90vw;
-	height: 35vw;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
@@ -31,7 +29,7 @@
 }
 
 #boardHeader{
-	display: flex;
+	border-bottom: 1px solid brown;
 }
 
 #boardHeader > div{
@@ -75,11 +73,10 @@
 }
 
 #rackoCanvas{
-	width: 90vw;
-	height: 35vw;
 	padding-left: 0;
 	padding-right: 0;
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
+	border: 1px solid black;
 }
