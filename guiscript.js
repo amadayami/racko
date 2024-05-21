@@ -36,6 +36,8 @@ class Card{
 	}
 }
 
+
+
 function drawValue(posx, posy, value){
 	ctx.font = "28px Atkinson-Bold";
 	ctx.fillStyle = "black";
@@ -48,13 +50,13 @@ function setup(mode){
 	for(let i = 1; i <= 10; i++){
 		posx = cardBaseWidth * i;
 		//ctx.beginPath() //not sure if i need this still
-		cards.push(new Card(posx, 165, cardBaseWidth, cardBaseHeight));
+		cards.push(new Card(posx, 10+cardBaseHeight+10, cardBaseWidth, cardBaseHeight));
 	}
 	if(mode === "double"){
 		for(let i = 1; i <= 10; i++){
 			posx = cardBaseWidth * i;
 			//ctx.beginPath();
-			cards.push(new Card(posx, 165+cardBaseHeight+10, cardBaseWidth, cardBaseHeight));
+			cards.push(new Card(posx, 10+(cardBaseHeight+10)*2, cardBaseWidth, cardBaseHeight));
 		}
 	}
 }
@@ -71,4 +73,3 @@ drawCard.create();
 discardCard.create();
 setup("double");
 drawCards();
-
