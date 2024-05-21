@@ -19,9 +19,20 @@ class Card{
 		this.w = w;
 		this.h = h;
 		this.selected = false;
+		this.cell = new Path2D();
+	}
+	selectCard(ctx){
+		if(this.selected === false){
+			this.selected = true;
+			ctx.strokeStyle = "red";
+		}
+		else{
+			this.selected = false;
+			ctx.strokeStyle = "black";
+		}
 	}
 	create(){
-		const cell = new Path2D();
+		let cell = this.cell;
 		cell.rect(this.x, this.y, this.w, this.h);
 		
 		ctx.fillStyle = "white";
@@ -31,12 +42,7 @@ class Card{
 		ctx.lineWidth = 2;
 		ctx.stroke(cell);
 	}
-	select(){
-		this.selected = true;
-	}
 }
-
-
 
 function drawValue(posx, posy, value){
 	ctx.font = "28px Atkinson-Bold";
@@ -73,3 +79,18 @@ drawCard.create();
 discardCard.create();
 setup("double");
 drawCards();
+console.log(cards);
+
+canvas.addEventListener('click', function(e){
+	for(let i = 0; i < cards.length; i++){
+		if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
+			ctx.fillStyle = "blue";
+		}
+		else{
+			ctx.fillStyle = "white";
+		}
+		ctx.fill(cards[i].cell);
+		ctx.strokeStyle = "black";
+		ctx.stroke(cards[i].cell);
+	}
+});
