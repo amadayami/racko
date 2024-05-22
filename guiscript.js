@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 var w = window.innerWidth;
 var h = window.innerHeight;
 var cards = [];
+var hand = [];
 var drawCard;
 var discardCard;
 
@@ -50,7 +51,7 @@ function drawValue(posx, posy, value){
 	ctx.fillText(value, posx, posy);
 }
 
-//draws first row for standard racko
+//Draws the cards for a player's hand
 function setup(mode){
 	let posx;
 	for(let i = 1; i <= 10; i++){
@@ -93,4 +94,90 @@ canvas.addEventListener('click', function(e){
 		ctx.strokeStyle = "black";
 		ctx.stroke(cards[i].cell);
 	}
+});
+
+
+//Creates a deck of cards of a given length
+function createDeck(len){
+	let deck = new Array();
+	for(let i = 1; i <= len; i++){
+		deck.push(i);
+	}
+	return deck;
+}
+
+//Shuffles a given deck
+function shuffle(deck){
+	let currInd = deck.length;
+	while(currInd != 0){
+		let randInd = Math.floor(Math.random()*currInd);
+		currInd--;
+		[deck[currInd], deck[randInd]] = [deck[randInd], deck[currInd]];
+	}
+	return deck;
+}
+
+//Creates a new player
+function createPlayer(isComputer, name, hand){
+	return player = {
+		isComputer: isComputer,
+		name: name,
+		hand: hand,
+		points: 0
+	}
+}
+
+//Creates a player hand of given length
+function createHand(len){
+	let hand = new Array(len);
+	console.log(hand);
+	return hand;
+}
+
+//Deals cards given a number of cards and a deck
+function dealCards(hand, deck, handLength){
+	for(let i = 0; i < handLength; i++){
+		let randInd = Math.floor(Math.random()*(deck.length));
+		hand[i] = deck[randInd];
+		deck.splice(randInd, 1);
+	}
+	return [hand, deck];
+}
+
+//Checks if a given hand is a winner, cards should increase in value
+//starting from the first index in the hand array
+function checkWinner(hand){
+	for(let i = 0; i < hand.length - 1; i++){
+		if(hand[i] > hand[i+1]) return false;
+	}
+	return true;
+}
+
+//Checks a given array of players and returns an array of players with
+//over 500 points
+function checkForWinners(playerArray){
+	let winners = [];
+	for(player of playerArray){
+		if(player.points > 500){
+			winners.push(player);
+		}
+	}
+	return winners;
+}
+
+//Tallies the number of cards in order and returns the value of the
+//cards
+function calculatePoints(hand){
+	let count = 5;
+	for(let i = 0; i < hand.length-1; i++){
+		if(hand[i] < hand[i+1]) count += 5;
+		else break;
+	}
+	return count;
+}
+
+
+let newGameButton = document.getElementById("newGame");
+newGameButton.addEventListener("click", function(){
+	console.log("New Game");
 });
