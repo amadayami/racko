@@ -12,6 +12,54 @@
 <body>
   <h2 id="title">RACKO</h2>
   <div id="board">
+	<div id="promptWindow" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h1>How to Play <span id="modal-title">Racko</span></h1>
+			<h2>Object</h2>
+			<p>
+				The first player to score 500 points wins!
+				You win a hand by arranging your cards from low to high
+				and getting a Racko!
+			</p>
+			<h2>Set-Up</h2>
+			<ol>
+				<li>
+					MODE: Choose between standard and double Racko.
+					Standard Racko is played with 60 cards (1-60) in a
+					deck and 10 cards in a player's hand.
+					Double Racko is played with 120 cards (1-120) in a
+					deck and 20 cards in a player's hand.
+				</li>
+				<li>
+					PLAYERS: Choose the number of players (4 players max).
+					You can also choose to play against computer players!
+					Note: You must play with at least one human.
+				</li>
+			</ol>
+			<h2>Gameplay</h2>
+			<p>
+				ON YOUR TURN: You pick one card, the top of either the draw
+				or the discard pile, and place it in your rack.
+				If you take from the DISCARD pile, you must replace a card
+				from your rack with the card you drew. The card you replace
+				is then placed on the top of the discard pile.
+				If you take from the DRAW pile, you can either replace a card
+				from your rack with the card you drew, or place in on the top
+				of the discard pile.
+				Gameplay continues with players alternating turns until one
+				player gets a Racko. The player who gets Racko receives 75
+				points and all other players receive 5 points for each card
+				they have in ascending order from the bottom.
+			</p>
+			<h2>Winning the Game</h2>
+			<p>
+				Continue playing rounds until a player scores 500 points.
+				Note: If two players score more than 500 points, then the
+				highest total wins!
+			</p>
+		</div>
+	</div>
 	<div id="boardHeader">
 	  <div><button type="button" class="button" id="rulebook">Guide</button></div>
 	  <div>

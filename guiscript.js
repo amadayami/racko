@@ -3,7 +3,6 @@ const ctx = canvas.getContext("2d");
 var w = window.innerWidth;
 var h = window.innerHeight;
 var cards = [];
-var hand = [];
 var drawCard;
 var discardCard;
 
@@ -176,8 +175,22 @@ function calculatePoints(hand){
 	return count;
 }
 
+function game(){
+	let drawPile, discardPile;
+	let players;
+}
 
-let newGameButton = document.getElementById("newGame");
-newGameButton.addEventListener("click", function(){
+var newGameBtn = document.getElementById("newGame");
+newGameBtn.addEventListener("click", function(){
 	console.log("New Game");
+});
+
+var modal = document.getElementById("promptWindow");
+var rulebookBtn = document.getElementById("rulebook");
+var span = document.getElementsByClassName("close")[0];
+rulebookBtn.addEventListener("click", function(){
+	modal.style.display = "block";
+});
+span.addEventListener("click", function(){
+	modal.style.display = "none";
 });
