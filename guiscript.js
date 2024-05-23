@@ -180,17 +180,23 @@ function game(){
 	let players;
 }
 
+var promptWindow = document.getElementById("promptWindow");
 var newGameBtn = document.getElementById("newGame");
+var closeNew = document.getElementsByClassName("close")[0];
 newGameBtn.addEventListener("click", function(){
 	console.log("New Game");
+	promptWindow.style.display = "block";
+});
+closeNew.addEventListener("click", function(){
+	promptWindow.style.display = "none";
 });
 
-var modal = document.getElementById("promptWindow");
+var rulebook = document.getElementById("rulebookWindow");
 var rulebookBtn = document.getElementById("rulebook");
-var span = document.getElementsByClassName("close")[0];
+var closeRule = document.getElementsByClassName("close")[1];
 rulebookBtn.addEventListener("click", function(){
-	modal.style.display = "block";
+	rulebook.style.display = "block";
 });
-span.addEventListener("click", function(){
-	modal.style.display = "none";
+closeRule.addEventListener("click", function(){
+	rulebook.style.display = "none";
 });
