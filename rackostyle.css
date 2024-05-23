@@ -104,8 +104,8 @@
 
 .modal-content{
 	background-color: white;
-	margin: 15% auto;
-	padding: 10px;
+	margin: 2% auto;
+	padding: 20px;
 	padding-top: 5px;
 	border: 1px solid black;
 	width: 80%;
@@ -127,7 +127,16 @@
 	text-align: center;
 }
 
+.modal-content > ol > li{
+	margin: 25px;
+	margin-top: 10px;
+}
+
 #modal-title{
 	font-family: "Bonk-Offset";
 	font-size: 1.2em;
+}
+
+.inner-p{
+	margin: 5px;
 }
