@@ -89,6 +89,7 @@ canvas.addEventListener('click', function(e){
 		else{
 			ctx.fillStyle = "white";
 		}
+		ctx.clearRect(cards[i].x, cards[i].y, cards[i].w, cards[i].h);
 		ctx.fill(cards[i].cell);
 		ctx.strokeStyle = "black";
 		ctx.stroke(cards[i].cell);
