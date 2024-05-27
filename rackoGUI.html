@@ -15,7 +15,33 @@
 	<div id="promptWindow" class="modal">
 		<div class="modal-content">
 			<span class="close">&times;</span>
-			<p>Ask user about stuff here</p>
+			<h2>Game Mode</h2>
+			<div>
+				<input id="standard" type='radio' name="gameType" value="standard">
+				<label for="standard">Standard</label>
+				<input id="double" type='radio' name="gameType" value="double">
+				<label for="double">Double</label>
+			</div>
+			<h2>Number of Players</h2>
+			<div>
+				<input id="two" type='radio' name="numPlayers" value="2">
+				<label for="two">2</label>
+				<input id="three" type='radio' name="numPlayers" value="3">
+				<label for="three">3</label>
+				<input id="four" type='radio' name="numPlayers" value="4">
+				<label for="four">4</label>
+			</div>
+			<div style="display:block; margin-top:5px;">
+				<label for="p1Name">Player 1 Name:</label>
+				<input type="text" id="p1Name" name="pNames"></br>
+				<label for="p2Name">Player 2 Name:</label>
+				<input type="text" id="p2Name" name="pNames"></br>
+				<label for="p3Name">Player 3 Name:</label>
+				<input type="text" id="p3Name" name="pNames"></br>
+				<label for="p4Name">Player 4 Name:</label>
+				<input type="text" id="p4Name" name="pNames"></br>
+			</div>
+			<button type="button" class="button" id="gameSubmit">Play</button>
 		</div>
 	</div>
 	<div id="rulebookWindow" class="modal">

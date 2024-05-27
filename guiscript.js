@@ -185,8 +185,15 @@ var promptWindow = document.getElementById("promptWindow");
 var newGameBtn = document.getElementById("newGame");
 var closeNew = document.getElementsByClassName("close")[0];
 newGameBtn.addEventListener("click", function(){
-	console.log("New Game");
 	promptWindow.style.display = "block";
+	let numPlayerBtns = document.getElementsByName("numPlayers");
+	for(btn of numPlayerBtns){
+		btn.checked = false;
+	}
+	let gameModeBtns = document.getElementsByName("gameType");
+	for(btn of gameModeBtns){
+		btn.checked = false;
+	}
 });
 closeNew.addEventListener("click", function(){
 	promptWindow.style.display = "none";
