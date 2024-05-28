@@ -154,12 +154,20 @@ input[type="radio"]:checked + label{
 }
 
 input[type="text"]{
+	visibility: hidden;
 	width: 30%;
 	margin: 15px;
 	text-align: left;
 }
 
+#playerNameForm{
+	display:block;
+	margin-top:5px;
+}
 
+#playerNameForm > label{
+	visibility: hidden;
+}
 
 #gameSubmit{
 	text-align: center;
