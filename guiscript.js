@@ -184,19 +184,36 @@ function game(){
 var promptWindow = document.getElementById("promptWindow");
 var newGameBtn = document.getElementById("newGame");
 var closeNew = document.getElementsByClassName("close")[0];
+var gameSubmit = document.getElementById("gameSubmit");
+var numPlayerBtns = document.getElementsByName("numPlayers");
+var gameModeBtns = document.getElementsByName("gameType");
+var numPlayers;
+var gameMode;
+
+
 newGameBtn.addEventListener("click", function(){
 	promptWindow.style.display = "block";
-	let numPlayerBtns = document.getElementsByName("numPlayers");
 	for(btn of numPlayerBtns){
 		btn.checked = false;
 	}
-	let gameModeBtns = document.getElementsByName("gameType");
 	for(btn of gameModeBtns){
 		btn.checked = false;
 	}
 });
+
+for(let i = 0; i < numPlayerBtns.length; i++){
+	numPlayerBtns[i].addEventListener("click", function(){
+		numPlayers = document.querySelector('input[name="numPlayers"]:checked').value;
+	});
+}
+
+
 closeNew.addEventListener("click", function(){
 	promptWindow.style.display = "none";
+});
+
+gameSubmit.addEventListener("click", function(){
+	
 });
 
 var rulebook = document.getElementById("rulebookWindow");
