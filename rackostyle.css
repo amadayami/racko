@@ -165,7 +165,7 @@ input[type="text"]{
 	margin-top:5px;
 }
 
-#playerNameForm > label{
+.playerLabels{
 	visibility: hidden;
 }
 

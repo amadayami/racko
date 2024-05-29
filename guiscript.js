@@ -176,7 +176,21 @@ function calculatePoints(hand){
 	return count;
 }
 
-function game(){
+function validateGameState(){
+	if(numPlayers === undefined){
+		console.log("Number of players not selected.");
+	}
+	else if(gameMode === undefined){
+		console.log("Game mode not selected.");
+	}
+	//also need to check for presence of player names
+	else{
+		console.log("All parameters set, creating game...");
+		game(numPlayers, gameMode);
+	}
+}
+
+function game(numPlayers, gameMode){
 	let drawPile, discardPile;
 	let players;
 }
@@ -190,7 +204,6 @@ var gameModeBtns = document.getElementsByName("gameType");
 var numPlayers;
 var gameMode;
 
-
 newGameBtn.addEventListener("click", function(){
 	promptWindow.style.display = "block";
 	for(btn of numPlayerBtns){
@@ -203,7 +216,25 @@ newGameBtn.addEventListener("click", function(){
 
 for(let i = 0; i < numPlayerBtns.length; i++){
 	numPlayerBtns[i].addEventListener("click", function(){
+		let textBoxes = document.querySelectorAll('input[type="text"]');
+		let playerLabels = document.getElementsByClassName("playerLabels");
+		for(let i = 0; i < textBoxes.length; i++){
+			textBoxes[i].style.visibility = "hidden";
+		}
+		for(let i = 0; i < playerLabels.length; i++){
+			playerLabels[i].style.visibility = "hidden";
+		}
 		numPlayers = document.querySelector('input[name="numPlayers"]:checked').value;
+		for(let i = 0; i < numPlayers; i++){
+			textBoxes[i].style.visibility = "visible";
+			playerLabels[i].style.visibility = "visible";
+		}
+	});
+}
+
+for(let i = 0; i < gameModeBtns.length; i++){
+	gameModeBtns[i].addEventListener("click", function(){
+		gameMode = document.querySelector('input[name="gameType"]:checked').value;
 	});
 }
 
@@ -213,7 +244,7 @@ closeNew.addEventListener("click", function(){
 });
 
 gameSubmit.addEventListener("click", function(){
-	
+	validateGameState();
 });
 
 var rulebook = document.getElementById("rulebookWindow");
