@@ -160,12 +160,20 @@ input[type="text"]{
 	text-align: left;
 }
 
+input[type="checkbox"]{
+	visibility: hidden;
+}
+
 #playerNameForm{
 	display:block;
 	margin-top:5px;
 }
 
 .playerLabels{
+	visibility: hidden;
+}
+
+.compCheckLabels{
 	visibility: hidden;
 }
 

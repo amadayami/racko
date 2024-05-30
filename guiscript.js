@@ -195,6 +195,16 @@ function validateGameState(){
 				playerNames.push(textBoxes[i].value);
 			}
 		}
+		
+		let allComputer = true;
+		let compChecks = document.querySelectorAll('input[type="checkbox"]');
+		for(let i = 0; i < numPlayers; i++){
+			if(compChecks[i].checked === false) allComputer = false;
+		}
+		if(allComputer){
+			console.log("Need at least one human player.");
+			return;
+		}
 		console.log("All parameters set, creating game...");
 		game(numPlayers, gameMode, playerNames);
 	}
@@ -216,12 +226,19 @@ var gameMode;
 var playerNames = [];
 
 newGameBtn.addEventListener("click", function(){
-	promptWindow.style.display = "block";
+	if(promptWindow.style.display === "block") promptWindow.style.display = "none";
+	else promptWindow.style.display = "block";
 	for(btn of numPlayerBtns){
 		btn.checked = false;
 	}
 	for(btn of gameModeBtns){
 		btn.checked = false;
+	}
+	let textBoxes = document.querySelectorAll('input[type="text"]');
+	let compChecks = document.querySelectorAll('input[type="checkbox"]');
+	for(let i = 0; i < textBoxes.length; i++){
+		textBoxes[i].value = "";
+		compChecks[i].checked = false;
 	}
 });
 
@@ -229,16 +246,20 @@ for(let i = 0; i < numPlayerBtns.length; i++){
 	numPlayerBtns[i].addEventListener("click", function(){
 		let textBoxes = document.querySelectorAll('input[type="text"]');
 		let playerLabels = document.getElementsByClassName("playerLabels");
+		let compChecks = document.querySelectorAll('input[type="checkbox"]');
+		let compLabels = document.getElementsByClassName("compCheckLabels");
 		for(let i = 0; i < textBoxes.length; i++){
 			textBoxes[i].style.visibility = "hidden";
-		}
-		for(let i = 0; i < playerLabels.length; i++){
 			playerLabels[i].style.visibility = "hidden";
+			compChecks[i].style.visibility = "hidden";
+			compLabels[i].style.visibility = "hidden";
 		}
 		numPlayers = document.querySelector('input[name="numPlayers"]:checked').value;
 		for(let i = 0; i < numPlayers; i++){
 			textBoxes[i].style.visibility = "visible";
 			playerLabels[i].style.visibility = "visible";
+			compChecks[i].style.visibility = "visible";
+			compLabels[i].style.visibility = "visible";
 		}
 	});
 }
