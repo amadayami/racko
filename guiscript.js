@@ -183,14 +183,24 @@ function validateGameState(){
 	else if(gameMode === undefined){
 		console.log("Game mode not selected.");
 	}
-	//also need to check for presence of player names
 	else{
+		playerNames = [];
+		let textBoxes = document.querySelectorAll('input[type="text"]');
+		for(let i = 0; i < numPlayers; i++){
+			if(textBoxes[i].value == "" || textBoxes[i].length == 0 || textBoxes[i] == null){
+				console.log("Missing player name");
+				return;
+			}
+			else{
+				playerNames.push(textBoxes[i].value);
+			}
+		}
 		console.log("All parameters set, creating game...");
-		game(numPlayers, gameMode);
+		game(numPlayers, gameMode, playerNames);
 	}
 }
 
-function game(numPlayers, gameMode){
+function game(numPlayers, gameMode, playerNames){
 	let drawPile, discardPile;
 	let players;
 }
@@ -203,6 +213,7 @@ var numPlayerBtns = document.getElementsByName("numPlayers");
 var gameModeBtns = document.getElementsByName("gameType");
 var numPlayers;
 var gameMode;
+var playerNames = [];
 
 newGameBtn.addEventListener("click", function(){
 	promptWindow.style.display = "block";
