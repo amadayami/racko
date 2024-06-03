@@ -77,9 +77,6 @@ drawCard = new Card(canvas.width/2-100-5, 10, cardBaseWidth, cardBaseHeight);
 discardCard = new Card(canvas.width/2 + 5, 10, cardBaseWidth, cardBaseHeight);
 drawCard.create();
 discardCard.create();
-setup("double");
-drawCards();
-console.log(cards);
 
 canvas.addEventListener('click', function(e){
 	for(let i = 0; i < cards.length; i++){
@@ -176,6 +173,7 @@ function calculatePoints(hand){
 	return count;
 }
 
+//Validates the values needed to create a new game
 function validateGameState(){
 	if(numPlayers === undefined){
 		console.log("Number of players not selected.");
@@ -206,13 +204,36 @@ function validateGameState(){
 			return;
 		}
 		console.log("All parameters set, creating game...");
-		game(numPlayers, gameMode, playerNames);
+		game(numPlayers, gameMode, playerNames, compChecks);
 	}
 }
 
-function game(numPlayers, gameMode, playerNames){
+function game(numPlayers, gameMode, playerNames, compChecks){
+	setup(gameMode);
+	drawCards();
 	let drawPile, discardPile;
-	let players;
+	let playersArray = [];
+	let deckLength, handLength;
+	if(gameMode === "standard"){
+		deckLength = 60;
+		handLength = 10;
+	}
+	else{
+		deckLength = 120;
+		handLength = 20;
+	}
+	
+	drawPile = createDeck(deckLength);
+	drawPile = shuffle(drawPile);
+	discardPile = createDeck(0);
+	for(let i = 0; i < numPlayers; i++){
+		playersArray.push(createPlayer(compChecks[i].checked, playerNames[i], Array(handLength)));
+	}
+	console.log("Game created!");
+	
+	let winner = false;
+	let winners = [];
+	
 }
 
 var promptWindow = document.getElementById("promptWindow");
@@ -277,6 +298,7 @@ closeNew.addEventListener("click", function(){
 
 gameSubmit.addEventListener("click", function(){
 	validateGameState();
+	promptWindow.style.display = "none";
 });
 
 var rulebook = document.getElementById("rulebookWindow");
