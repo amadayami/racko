@@ -5,6 +5,8 @@ var h = window.innerHeight;
 var cards = [];
 var drawCard;
 var discardCard;
+var activeCard = "";
+var cardDrawnThisTurn = false;
 
 ctx.canvas.width = window.innerWidth * 0.9;
 ctx.canvas.height = window.innerHeight;
@@ -18,18 +20,7 @@ class Card{
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.selected = false;
 		this.cell = new Path2D();
-	}
-	selectCard(ctx){
-		if(this.selected === false){
-			this.selected = true;
-			ctx.strokeStyle = "red";
-		}
-		else{
-			this.selected = false;
-			ctx.strokeStyle = "black";
-		}
 	}
 	create(){
 		let cell = this.cell;
@@ -65,6 +56,11 @@ function setup(mode){
 			cards.push(new Card(posx, 10+(cardBaseHeight+10)*2, cardBaseWidth, cardBaseHeight));
 		}
 	}
+	
+	drawCard = new Card(canvas.width/2-100-5, 10, cardBaseWidth, cardBaseHeight);
+	discardCard = new Card(canvas.width/2 + 5, 10, cardBaseWidth, cardBaseHeight);
+	drawCard.create();
+	discardCard.create();
 }
 
 function drawCards(){
@@ -73,26 +69,55 @@ function drawCards(){
 	}
 }
 
-drawCard = new Card(canvas.width/2-100-5, 10, cardBaseWidth, cardBaseHeight);
-discardCard = new Card(canvas.width/2 + 5, 10, cardBaseWidth, cardBaseHeight);
-drawCard.create();
-discardCard.create();
+function resetCardDisplay(card){
+	ctx.fillStyle = "white";
+	ctx.clearRect(card.x, card.y, card.w, card.h);
+	ctx.fill(card.cell);
+	ctx.strokeStyle = "black";
+	ctx.stroke(card.cell);
+}
+
+function selectCardDisplay(card){
+	ctx.fillStyle = "blue";
+	ctx.clearRect(card.x, card.y, card.w, card.h);
+	ctx.fill(card.cell);
+	ctx.strokeStyle = "black";
+	ctx.stroke(card.cell);
+}
 
 canvas.addEventListener('click', function(e){
+	if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
+		if(activeCard === "discard") resetCardDisplay(discardCard);
+		activeCard = "draw";
+		selectCardDisplay(drawCard);
+		if(!cardDrawnThisTurn){
+			//card drawing logic here
+			cardDrawnThisTurn = true;
+		}
+		return;
+	}
+	
+	if(ctx.isPointInPath(discardCard.cell, e.offsetX, e.offsetY)){
+		if(activeCard === "discard"){
+			//discard the card and move to the next player
+		}
+		else if(activeCard === "draw"){
+			resetCardDisplay(drawCard);
+			selectCardDisplay(discardCard);
+			activeCard = "discard";
+		}
+		return;
+	}
+	
 	for(let i = 0; i < cards.length; i++){
 		if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
-			ctx.fillStyle = "blue";
+			selectCardDisplay(cards[i]);
 		}
 		else{
-			ctx.fillStyle = "white";
+			resetCardDisplay(cards[i]);
 		}
-		ctx.clearRect(cards[i].x, cards[i].y, cards[i].w, cards[i].h);
-		ctx.fill(cards[i].cell);
-		ctx.strokeStyle = "black";
-		ctx.stroke(cards[i].cell);
 	}
 });
-
 
 //Creates a deck of cards of a given length
 function createDeck(len){
