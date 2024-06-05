@@ -229,6 +229,7 @@ function validateGameState(){
 			return;
 		}
 		console.log("All parameters set, creating game...");
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		game(numPlayers, gameMode, playerNames, compChecks);
 	}
 }
