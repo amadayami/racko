@@ -5,13 +5,11 @@ var h = window.innerHeight;
 var cards = [];
 var drawCard;
 var discardCard;
-var activeCard = "";
-var cardDrawnThisTurn = false;
 
 ctx.canvas.width = window.innerWidth * 0.9;
-ctx.canvas.height = window.innerHeight;
+ctx.canvas.height = window.innerHeight * 0.8;
 
-var cardBaseWidth = canvas.width/12;
+var cardBaseWidth = canvas.width/13;
 var cardBaseHeight = cardBaseWidth*1.5;
 
 class Card{
@@ -45,19 +43,19 @@ function drawValue(posx, posy, value){
 function setup(mode){
 	let posx;
 	for(let i = 1; i <= 10; i++){
-		posx = cardBaseWidth * i;
+		posx = ((canvas.width/2) - 6*cardBaseWidth) + cardBaseWidth * i;
 		//ctx.beginPath() //not sure if i need this still
 		cards.push(new Card(posx, 10+cardBaseHeight+10, cardBaseWidth, cardBaseHeight));
 	}
 	if(mode === "double"){
 		for(let i = 1; i <= 10; i++){
-			posx = cardBaseWidth * i;
+			posx = ((canvas.width/2) - 6*cardBaseWidth) + cardBaseWidth * i;
 			//ctx.beginPath();
 			cards.push(new Card(posx, 10+(cardBaseHeight+10)*2, cardBaseWidth, cardBaseHeight));
 		}
 	}
 	
-	drawCard = new Card(canvas.width/2-100-5, 10, cardBaseWidth, cardBaseHeight);
+	drawCard = new Card(canvas.width/2-cardBaseWidth-5, 10, cardBaseWidth, cardBaseHeight);
 	discardCard = new Card(canvas.width/2 + 5, 10, cardBaseWidth, cardBaseHeight);
 	drawCard.create();
 	discardCard.create();
