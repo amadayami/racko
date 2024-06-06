@@ -185,3 +185,19 @@ input[type="checkbox"]{
 	display: flex;
 	display: grid;
 }
+
+#turnButtons{
+	display: flex;
+	justify-content: center;
+	margin: 5px;
+	padding: 5px;
+}
+#turnButtons *{
+	margin-right: 3px;
+	margin-left: 3px;
+	background-color: gray;
+	&:hover{
+		box-shadow: none;
+	}
+}
+
