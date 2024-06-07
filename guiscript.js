@@ -334,3 +334,12 @@ rulebookBtn.addEventListener("click", function(){
 closeRule.addEventListener("click", function(){
 	rulebook.style.display = "none";
 });
+
+function enableTurnButtons(){
+	let addBtn = document.getElementById("addCardBtn");
+	let endTurnBtn = document.getElementById("endTurnBtn");
+	addBtn.disabled = false;
+	endTurnBtn.disabled = false;
+	addBtn.style.backgroundColor = '#f0332f';
+	endTurnBtn.style.backgroundColor = '#f0332f';
+}
