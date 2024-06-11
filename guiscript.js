@@ -12,6 +12,89 @@ ctx.canvas.height = window.innerHeight * 0.8;
 var cardBaseWidth = canvas.width/13;
 var cardBaseHeight = cardBaseWidth*1.5;
 
+class Game{
+	constructor(gameMode, draw, discard, players){
+		console.log(players);
+		this.gameMode;
+		this.draw = draw;
+		this.discard = discard;
+		this.players = players;
+		
+		//tentative variables
+		this.isWinner = false;
+		this.winners = [];
+		this.turn = 0;
+		this.handCardIndex = -1;
+		this.currentPlayer = this.players[0];
+		this.currentCard;
+		this.cardDrawnThisTurn = false;
+	}
+	init(){
+		setup(this.gameMode);
+		enableTurnButtons();
+		drawCards();
+		canvas.addEventListener('click', function(e){
+			for(let i = 0; i < cards.length; i++){
+				if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
+					selectCardDisplay(cards[i]);
+				}
+				else{
+					resetCardDisplay(cards[i]);
+				}
+			}
+		});
+		document.getElementById("endTurnBtn").addEventListener('click', this.nextTurn());
+		document.getElementById("addCardBtn").addEventListener('click', this.switchCard());
+	};
+	switchCard(){
+		if(this.handIndex !== -1){
+			let temp = this.currentPlayer.hand[this.handIndex];
+			this.currentPlayer.hand[this.handIndex] = this.currentCard;
+			this.currentCard = temp;
+			this.discard.push(temp);
+			this.nextTurn();
+		}
+		else console.log("No card selected.");
+	}
+	nextHand(){
+		this.currentPlayer.points += 75;
+		for(player of this.players){
+			if(player !== this.currentPlayer){
+				player.points = calculatePoints(player.hand);
+			}
+		}
+		this.winners = checkForWinners(this.players);
+		if(this.winners.length > 0){
+			if(this.winners.length === 1){
+				//display winner name
+			}
+			else{
+				//display winners names
+			}
+			//close the game
+		}
+		else{
+			this.turn = 0;
+			this.currentPlayer = this.players[this.turn];
+			this.handCardIndex = -1;
+			this.cardDrawnThisTurn = false;
+		}
+	};
+	nextTurn(){
+		this.isWinner = checkWinner(this.currentPlayer.hand);
+		if(this.isWinner){
+			this.nextHand();
+		}
+		else{
+			this.turn++;
+			this.currentPlayer = this.players[this.turn%this.players.length];
+			this.handCardIndex = -1;
+			this.cardDrawnThisTurn = false;
+			//if computer player, then do computer stuff and go to next turn
+		}
+	}
+}
+
 class Card{
 	constructor(x,y,w,h){
 		this.x = x;
@@ -82,40 +165,6 @@ function selectCardDisplay(card){
 	ctx.strokeStyle = "black";
 	ctx.stroke(card.cell);
 }
-
-canvas.addEventListener('click', function(e){
-	if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
-		if(activeCard === "discard") resetCardDisplay(discardCard);
-		activeCard = "draw";
-		selectCardDisplay(drawCard);
-		if(!cardDrawnThisTurn){
-			//card drawing logic here
-			cardDrawnThisTurn = true;
-		}
-		return;
-	}
-	
-	if(ctx.isPointInPath(discardCard.cell, e.offsetX, e.offsetY)){
-		if(activeCard === "discard"){
-			//discard the card and move to the next player
-		}
-		else if(activeCard === "draw"){
-			resetCardDisplay(drawCard);
-			selectCardDisplay(discardCard);
-			activeCard = "discard";
-		}
-		return;
-	}
-	
-	for(let i = 0; i < cards.length; i++){
-		if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
-			selectCardDisplay(cards[i]);
-		}
-		else{
-			resetCardDisplay(cards[i]);
-		}
-	}
-});
 
 //Creates a deck of cards of a given length
 function createDeck(len){

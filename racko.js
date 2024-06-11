@@ -356,7 +356,7 @@ function game(){
 		[drawPile, discardPile, players] = play(drawPile, discardPile, players);
 		winners = checkForWinners(players);
 		if(winners.length > 0){
-			if(winners.length = 1){
+			if(winners.length === 1){
 				console.log(`${winners[0].name} wins the game!`);
 			}
 			else{
