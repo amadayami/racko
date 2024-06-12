@@ -32,32 +32,31 @@ class Game{
 	}
 	init(){
 		setup(this.gameMode);
-		enableTurnButtons();
+		enableTurnButtons(this);
+		addListeners(this);
 		drawCards();
-		canvas.addEventListener('click', function(e){
-			for(let i = 0; i < cards.length; i++){
-				if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
-					selectCardDisplay(cards[i]);
-				}
-				else{
-					resetCardDisplay(cards[i]);
-				}
-			}
-		});
-		document.getElementById("endTurnBtn").addEventListener('click', this.nextTurn());
-		document.getElementById("addCardBtn").addEventListener('click', this.switchCard());
+		updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
+		[this.draw, this.players] = dealCards(this.draw, this.players, this.draw.length/6);
+		console.log(this.players);
+		this.currentCard = this.draw.pop();
+		console.log(this.currentCard);
 	};
-	switchCard(){
-		if(this.handIndex !== -1){
-			let temp = this.currentPlayer.hand[this.handIndex];
-			this.currentPlayer.hand[this.handIndex] = this.currentCard;
+	async switchCard(){
+		console.log("switch card triggered");
+		console.log(this.handCardIndex);
+		if(this.handCardIndex !== -1){
+			console.log(this.handCardIndex);
+			let temp = this.currentPlayer.hand[this.handCardIndex];
+			this.currentPlayer.hand[this.handCardIndex] = this.currentCard;
 			this.currentCard = temp;
 			this.discard.push(temp);
-			this.nextTurn();
+			console.log(this.handCardIndex);
+			await this.nextTurn();
 		}
 		else console.log("No card selected.");
 	}
 	nextHand(){
+		console.log("next hand triggered");
 		this.currentPlayer.points += 75;
 		for(player of this.players){
 			if(player !== this.currentPlayer){
@@ -79,11 +78,14 @@ class Game{
 			this.currentPlayer = this.players[this.turn];
 			this.handCardIndex = -1;
 			this.cardDrawnThisTurn = false;
+			//reset deck here
 		}
 	};
 	nextTurn(){
+		console.log("next turn triggered");
 		this.isWinner = checkWinner(this.currentPlayer.hand);
 		if(this.isWinner){
+			console.log("winner");
 			this.nextHand();
 		}
 		else{
@@ -91,6 +93,7 @@ class Game{
 			this.currentPlayer = this.players[this.turn%this.players.length];
 			this.handCardIndex = -1;
 			this.cardDrawnThisTurn = false;
+			updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
 			//if computer player, then do computer stuff and go to next turn
 		}
 	}
@@ -205,18 +208,24 @@ function createHand(len){
 }
 
 //Deals cards given a number of cards and a deck
-function dealCards(hand, deck, handLength){
-	for(let i = 0; i < handLength; i++){
-		let randInd = Math.floor(Math.random()*(deck.length));
-		hand[i] = deck[randInd];
-		deck.splice(randInd, 1);
+function dealCards(deck, players, h){
+	for(player of players){
+		console.log(player);
+		let hand = player.hand;
+		console.log("deck length: " + h);
+		for(let i = 0; i < h; i++){
+			let randInd = Math.floor(Math.random()*deck.length);
+			hand[i] = deck[randInd];
+			deck.splice(randInd, 1);
+		}
 	}
-	return [hand, deck];
+	return [deck, players];
 }
 
 //Checks if a given hand is a winner, cards should increase in value
 //starting from the first index in the hand array
 function checkWinner(hand){
+	console.log(hand);
 	for(let i = 0; i < hand.length - 1; i++){
 		if(hand[i] > hand[i+1]) return false;
 	}
@@ -392,11 +401,39 @@ closeRule.addEventListener("click", function(){
 	rulebook.style.display = "none";
 });
 
-function enableTurnButtons(){
+function enableTurnButtons(instance){
 	let addBtn = document.getElementById("addCardBtn");
 	let endTurnBtn = document.getElementById("endTurnBtn");
 	addBtn.disabled = false;
 	endTurnBtn.disabled = false;
 	addBtn.style.backgroundColor = '#f0332f';
 	endTurnBtn.style.backgroundColor = '#f0332f';
+	addBtn.addEventListener('click', function(){
+		instance.switchCard();
+	})
+	endTurnBtn.addEventListener('click', function(){
+		instance.nextTurn();
+	});
+}
+
+function addListeners(instance){
+	canvas.addEventListener('click', function(e){
+		for(let i = 0; i < cards.length; i++){
+			if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
+				selectCardDisplay(cards[i]);
+				instance.handCardIndex = i;
+			}
+			else{
+				resetCardDisplay(cards[i]);
+			}
+		}
+		console.log(instance.handCardIndex);
+	});
+}
+
+function updatePlayerInfoDisp(name, points){
+	let playerName = document.getElementById("playerName");
+	let playerPoints = document.getElementById("playerPoints");
+	playerName.innerText = `Player: ${name}`;
+	playerPoints.innerText = `Points: ${points}`;
 }
