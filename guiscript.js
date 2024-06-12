@@ -5,6 +5,7 @@ var h = window.innerHeight;
 var cards = [];
 var drawCard;
 var discardCard;
+var gameInstance = null;
 
 ctx.canvas.width = window.innerWidth * 0.9;
 ctx.canvas.height = window.innerHeight * 0.8;
@@ -281,9 +282,20 @@ function validateGameState(){
 	}
 }
 
+function resetBoard(players, draw, discard){
+	draw = draw.concat(discard);
+	discard = [];
+	const anyUndefined = (player) => player.hand.includes(undefined);
+	if(!players.some(anyUndefined)){
+		for(player of players){
+			draw = draw.concat(player.hand);
+			player.hand = [];
+		}
+	}
+	return [players, shuffle(draw), discard];
+}
+
 function game(numPlayers, gameMode, playerNames, compChecks){
-	setup(gameMode);
-	drawCards();
 	let drawPile, discardPile;
 	let playersArray = [];
 	let deckLength, handLength;
@@ -295,18 +307,14 @@ function game(numPlayers, gameMode, playerNames, compChecks){
 		deckLength = 120;
 		handLength = 20;
 	}
-	
-	drawPile = createDeck(deckLength);
-	drawPile = shuffle(drawPile);
+	drawPile = shuffle(createDeck(deckLength));
 	discardPile = createDeck(0);
 	for(let i = 0; i < numPlayers; i++){
 		playersArray.push(createPlayer(compChecks[i].checked, playerNames[i], Array(handLength)));
 	}
-	console.log("Game created!");
-	
-	let winner = false;
-	let winners = [];
-	
+	console.log(playersArray);
+	gameInstance = new Game(gameMode, drawPile, discardPile, playersArray);
+	gameInstance.init();
 }
 
 var promptWindow = document.getElementById("promptWindow");
