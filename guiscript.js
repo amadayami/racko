@@ -107,11 +107,11 @@ class Card{
 		this.h = h;
 		this.cell = new Path2D();
 	}
-	create(){
+	create(style){
 		let cell = this.cell;
 		cell.rect(this.x, this.y, this.w, this.h);
 		
-		ctx.fillStyle = "white";
+		ctx.fillStyle = style;
 		ctx.fill(cell);
 		
 		ctx.strokeStyle = "black";
@@ -144,13 +144,13 @@ function setup(mode){
 	
 	drawCard = new Card(canvas.width/2-cardBaseWidth-5, 10, cardBaseWidth, cardBaseHeight);
 	discardCard = new Card(canvas.width/2 + 5, 10, cardBaseWidth, cardBaseHeight);
-	drawCard.create();
-	discardCard.create();
+	drawCard.create("red");
+	discardCard.create("white");
 }
 
 function drawCards(){
 	for(card of cards){
-		card.create();
+		card.create("white");
 	}
 }
 
@@ -418,6 +418,21 @@ function enableTurnButtons(instance){
 
 function addListeners(instance){
 	canvas.addEventListener('click', function(e){
+		if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
+			if(!instance.cardDrawnThisTurn){
+				if(instance.draw.length === 0){
+					[instance.draw, instance.discard] = [instance.discard, instance.draw];
+					instance.drawPile = shuffle(instance.draw);
+					instance.currentCard = drawPile.pop();
+				}
+				else{
+					instance.discard.push(instance.currentCard);
+					instance.currentCard = instance.draw.pop();
+				}
+				instance.cardDrawnThisTurn = true;
+			}
+			return;
+		}
 		for(let i = 0; i < cards.length; i++){
 			if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
 				selectCardDisplay(cards[i]);
