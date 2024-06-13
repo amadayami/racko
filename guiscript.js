@@ -31,15 +31,13 @@ class Game{
 		this.cardDrawnThisTurn = false;
 	}
 	init(){
-		setup(this.gameMode);
+		setup(this);
 		enableTurnButtons(this);
 		addListeners(this);
-		drawCards();
 		updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
 		[this.draw, this.players] = dealCards(this.draw, this.players, this.draw.length/6);
-		console.log(this.players);
 		this.currentCard = this.draw.pop();
-		console.log(this.currentCard);
+		updateBoard(this);
 	};
 	async switchCard(){
 		console.log("switch card triggered");
@@ -94,6 +92,7 @@ class Game{
 			this.handCardIndex = -1;
 			this.cardDrawnThisTurn = false;
 			updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
+			updateBoard(this);
 			//if computer player, then do computer stuff and go to next turn
 		}
 	}
@@ -120,21 +119,15 @@ class Card{
 	}
 }
 
-function drawValue(posx, posy, value){
-	ctx.font = "28px Atkinson-Bold";
-	ctx.fillStyle = "black";
-	ctx.fillText(value, posx, posy);
-}
-
-//Draws the cards for a player's hand
-function setup(mode){
+//Creates the cards for the board
+function setup(instance){
 	let posx;
 	for(let i = 1; i <= 10; i++){
 		posx = ((canvas.width/2) - 6*cardBaseWidth) + cardBaseWidth * i;
 		//ctx.beginPath() //not sure if i need this still
 		cards.push(new Card(posx, 10+cardBaseHeight+10, cardBaseWidth, cardBaseHeight));
 	}
-	if(mode === "double"){
+	if(instance.gameMode === "double"){
 		for(let i = 1; i <= 10; i++){
 			posx = ((canvas.width/2) - 6*cardBaseWidth) + cardBaseWidth * i;
 			//ctx.beginPath();
@@ -144,30 +137,45 @@ function setup(mode){
 	
 	drawCard = new Card(canvas.width/2-cardBaseWidth-5, 10, cardBaseWidth, cardBaseHeight);
 	discardCard = new Card(canvas.width/2 + 5, 10, cardBaseWidth, cardBaseHeight);
-	drawCard.create("red");
-	discardCard.create("white");
 }
 
-function drawCards(){
+function updateBoard(instance){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	//draw cards
+	drawCard.create("red");
+	discardCard.create("white");
 	for(card of cards){
 		card.create("white");
 	}
+	//draw values
+	ctx.font = "28px Atkinson-Bold";
+	ctx.fillStyle = "black";
+	for(let i = 0; i < instance.currentPlayer.hand.length; i++){
+		ctx.fillText(instance.currentPlayer.hand[i], cards[i].x+(cardBaseWidth/6), cards[i].y+(cardBaseHeight/4));
+	}
+	ctx.fillText(instance.currentCard, discardCard.x+(cardBaseWidth/6), discardCard.y+(cardBaseHeight/4));
 }
 
-function resetCardDisplay(card){
+function resetCardDisplay(card, value){
 	ctx.fillStyle = "white";
 	ctx.clearRect(card.x, card.y, card.w, card.h);
 	ctx.fill(card.cell);
 	ctx.strokeStyle = "black";
 	ctx.stroke(card.cell);
+	
+	ctx.fillStyle = "black";
+	ctx.fillText(value, card.x+(cardBaseWidth/6), card.y+(cardBaseHeight/4));
 }
 
-function selectCardDisplay(card){
+function selectCardDisplay(card, value){
 	ctx.fillStyle = "blue";
 	ctx.clearRect(card.x, card.y, card.w, card.h);
 	ctx.fill(card.cell);
 	ctx.strokeStyle = "black";
 	ctx.stroke(card.cell);
+	
+	ctx.fillStyle = "black";
+	ctx.fillText(value, card.x+(cardBaseWidth/6), card.y+(cardBaseHeight/4));
 }
 
 //Creates a deck of cards of a given length
@@ -210,9 +218,7 @@ function createHand(len){
 //Deals cards given a number of cards and a deck
 function dealCards(deck, players, h){
 	for(player of players){
-		console.log(player);
 		let hand = player.hand;
-		console.log("deck length: " + h);
 		for(let i = 0; i < h; i++){
 			let randInd = Math.floor(Math.random()*deck.length);
 			hand[i] = deck[randInd];
@@ -424,10 +430,12 @@ function addListeners(instance){
 					[instance.draw, instance.discard] = [instance.discard, instance.draw];
 					instance.drawPile = shuffle(instance.draw);
 					instance.currentCard = drawPile.pop();
+					updateBoard(instance);
 				}
 				else{
 					instance.discard.push(instance.currentCard);
 					instance.currentCard = instance.draw.pop();
+					updateBoard(instance);
 				}
 				instance.cardDrawnThisTurn = true;
 			}
@@ -435,11 +443,11 @@ function addListeners(instance){
 		}
 		for(let i = 0; i < cards.length; i++){
 			if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
-				selectCardDisplay(cards[i]);
+				selectCardDisplay(cards[i], instance.currentPlayer.hand[i]);
 				instance.handCardIndex = i;
 			}
 			else{
-				resetCardDisplay(cards[i]);
+				resetCardDisplay(cards[i], instance.currentPlayer.hand[i]);
 			}
 		}
 		console.log(instance.handCardIndex);
