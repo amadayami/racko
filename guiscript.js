@@ -39,6 +39,20 @@ class Game{
 		this.currentCard = this.draw.pop();
 		updateBoard(this);
 	};
+	resetDeck(){
+		this.draw = this.draw.concat(this.discard);
+		this.draw.push(this.currentCard);
+		this.currentCard = "";
+		this.discard = [];
+		const noUndefinedCardsInHand = (player) => !player.hand.includes(undefined);
+		if(this.players.every(noUndefinedCardsInHand)){
+			for(player of this.players){
+				this.draw = this.draw.concat(player.hand);
+				player.hand = [];
+			}
+		}
+		else console.log("Some card undefined in player hand");
+	}
 	async switchCard(){
 		console.log("switch card triggered");
 		console.log(this.handCardIndex);
@@ -295,19 +309,6 @@ function validateGameState(){
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		game(numPlayers, gameMode, playerNames, compChecks);
 	}
-}
-
-function resetBoard(players, draw, discard){
-	draw = draw.concat(discard);
-	discard = [];
-	const anyUndefined = (player) => player.hand.includes(undefined);
-	if(!players.some(anyUndefined)){
-		for(player of players){
-			draw = draw.concat(player.hand);
-			player.hand = [];
-		}
-	}
-	return [players, shuffle(draw), discard];
 }
 
 function game(numPlayers, gameMode, playerNames, compChecks){
