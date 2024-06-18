@@ -61,7 +61,6 @@ class Game{
 			let temp = this.currentPlayer.hand[this.handCardIndex];
 			this.currentPlayer.hand[this.handCardIndex] = this.currentCard;
 			this.currentCard = temp;
-			this.discard.push(temp);
 			console.log(this.handCardIndex);
 			await this.nextTurn();
 		}
@@ -79,25 +78,32 @@ class Game{
 		if(this.winners.length > 0){
 			if(this.winners.length === 1){
 				//display winner name
+				console.log("winner: " + winners[0]);
 			}
 			else{
 				//display winners names
+				console.log("multiple winners");
 			}
 			//close the game
 		}
 		else{
+			console.log("no winner yet");
 			this.turn = 0;
 			this.currentPlayer = this.players[this.turn];
 			this.handCardIndex = -1;
 			this.cardDrawnThisTurn = false;
-			//reset deck here
+			this.resetDeck();
+			[this.draw, this.players] = dealCards(this.draw, this.players, this.draw.length/6);
+			this.currentCard = this.draw.pop();
+			updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
+			updateBoard(this);
 		}
 	};
 	nextTurn(){
 		console.log("next turn triggered");
 		this.isWinner = checkWinner(this.currentPlayer.hand);
 		if(this.isWinner){
-			console.log("winner");
+			console.log(`${this.currentPlayer.name} wins the hand`);
 			this.nextHand();
 		}
 		else{
@@ -164,6 +170,7 @@ function updateBoard(instance){
 	//draw values
 	ctx.font = "28px Atkinson-Bold";
 	ctx.fillStyle = "black";
+	console.log(cards);
 	for(let i = 0; i < instance.currentPlayer.hand.length; i++){
 		ctx.fillText(instance.currentPlayer.hand[i], cards[i].x+(cardBaseWidth/6), cards[i].y+(cardBaseHeight/4));
 	}
@@ -245,7 +252,6 @@ function dealCards(deck, players, h){
 //Checks if a given hand is a winner, cards should increase in value
 //starting from the first index in the hand array
 function checkWinner(hand){
-	console.log(hand);
 	for(let i = 0; i < hand.length - 1; i++){
 		if(hand[i] > hand[i+1]) return false;
 	}
