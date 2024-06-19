@@ -104,6 +104,7 @@ class Game{
 		this.isWinner = checkWinner(this.currentPlayer.hand);
 		if(this.isWinner){
 			console.log(`${this.currentPlayer.name} wins the hand`);
+			updateWindowInfo(this, "hand");
 			this.nextHand();
 		}
 		else{
@@ -466,4 +467,28 @@ function updatePlayerInfoDisp(name, points){
 	let playerPoints = document.getElementById("playerPoints");
 	playerName.innerText = `Player: ${name}`;
 	playerPoints.innerText = `Points: ${points}`;
+}
+
+var gameUpdateWindow = document.getElementById("gameUpdateWindow");
+var updateWindowTitle = document.getElementById("updateWindowTitle");
+var updateWindowDetails = document.getElementById("updateWindowDetails");
+
+function updateWindowInfo(instance, type){
+	gameUpdateWindow.style.display = "flex";
+	if(type === "hand"){
+		updateWindowTitle.innerText = `${instance.currentPlayer.name} wins the hand!`;
+		updateWindowDetails.innerText = "Resetting deck...";
+	}
+	else if(type === "game"){
+		let scoreStr = "Final scores:\n";
+		for(player of instance.players){
+			str += `${player.name}: ${player.points} ${"\n"}`;
+		}
+		updateWindowTitle.innerText = `${instance.currentPlayer.name} wins the game!`;
+		updateWindowDetails.innerText = scoreStr;
+	}
+	else console.log("unrecognized update type");
+	setInterval(() => {
+		gameUpdateWindow.style.display = "none";
+	}, 5000);
 }
