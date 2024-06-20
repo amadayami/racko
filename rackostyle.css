@@ -199,7 +199,7 @@ input[type="checkbox"]{
 }
 
 #gameUpdateWindow{
-	display: flex;
+	display: none;
 	align-items: center;
 	height: 40%;
 	width: 40%;
@@ -207,8 +207,6 @@ input[type="checkbox"]{
 }
 
 #update-modal-content{
-	display: flex;
-	justify-content: center;
 	height: 60%;
 	border: 2px solid f0332f;
 }

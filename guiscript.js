@@ -76,14 +76,7 @@ class Game{
 		}
 		this.winners = checkForWinners(this.players);
 		if(this.winners.length > 0){
-			if(this.winners.length === 1){
-				//display winner name
-				console.log("winner: " + winners[0]);
-			}
-			else{
-				//display winners names
-				console.log("multiple winners");
-			}
+			updateWindowInfo(this, "game");
 			//close the game
 		}
 		else{
@@ -482,13 +475,23 @@ function updateWindowInfo(instance, type){
 	else if(type === "game"){
 		let scoreStr = "Final scores:\n";
 		for(player of instance.players){
-			str += `${player.name}: ${player.points} ${"\n"}`;
+			scoreStr += `${player.name}: ${player.points} ${"\n"}`;
+			updateWindowDetails.innerText = scoreStr;
 		}
-		updateWindowTitle.innerText = `${instance.currentPlayer.name} wins the game!`;
-		updateWindowDetails.innerText = scoreStr;
+		if(instance.winners.length === 1){
+			updateWindowTitle.innerText = `${instance.winners[0].name} wins the game!`;
+		}
+		else if(instance.winners.length > 1){
+			let winnerNames = "";
+			for(winner of instance.winners){
+				winnerNames = winnerNames + instance.winner.name + " ";
+			}
+			updateWindowTitle.innerText = `${winnerNames}win the game!`;
+		}
+		else console.log("issue with displaying winners");
 	}
 	else console.log("unrecognized update type");
 	setInterval(() => {
 		gameUpdateWindow.style.display = "none";
-	}, 5000);
+	}, 4000);
 }
