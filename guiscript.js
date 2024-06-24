@@ -2,7 +2,6 @@ const canvas = document.getElementById("rackoCanvas");
 const ctx = canvas.getContext("2d");
 var w = window.innerWidth;
 var h = window.innerHeight;
-var cards = [];
 var drawCard;
 var discardCard;
 var gameInstance = null;
@@ -29,6 +28,7 @@ class Game{
 		this.currentPlayer = this.players[0];
 		this.currentCard;
 		this.cardDrawnThisTurn = false;
+		this.cards = [];
 	}
 	init(){
 		setup(this);
@@ -141,13 +141,13 @@ function setup(instance){
 	for(let i = 1; i <= 10; i++){
 		posx = ((canvas.width/2) - 6*cardBaseWidth) + cardBaseWidth * i;
 		//ctx.beginPath() //not sure if i need this still
-		cards.push(new Card(posx, 10+cardBaseHeight+10, cardBaseWidth, cardBaseHeight));
+		instance.cards.push(new Card(posx, 10+cardBaseHeight+10, cardBaseWidth, cardBaseHeight));
 	}
 	if(instance.gameMode === "double"){
 		for(let i = 1; i <= 10; i++){
 			posx = ((canvas.width/2) - 6*cardBaseWidth) + cardBaseWidth * i;
 			//ctx.beginPath();
-			cards.push(new Card(posx, 10+(cardBaseHeight+10)*2, cardBaseWidth, cardBaseHeight));
+			instance.cards.push(new Card(posx, 10+(cardBaseHeight+10)*2, cardBaseWidth, cardBaseHeight));
 		}
 	}
 	
@@ -160,15 +160,15 @@ function updateBoard(instance){
 	//draw cards
 	drawCard.create("red");
 	discardCard.create("white");
-	for(card of cards){
+	for(card of instance.cards){
 		card.create("white");
 	}
 	//draw values
 	ctx.font = "28px Atkinson-Bold";
 	ctx.fillStyle = "black";
-	console.log(cards);
+	console.log(instance.cards);
 	for(let i = 0; i < instance.currentPlayer.hand.length; i++){
-		ctx.fillText(instance.currentPlayer.hand[i], cards[i].x+(cardBaseWidth/6), cards[i].y+(cardBaseHeight/4));
+		ctx.fillText(instance.currentPlayer.hand[i], instance.cards[i].x+(cardBaseWidth/6), instance.cards[i].y+(cardBaseHeight/4));
 	}
 	ctx.fillText(instance.currentCard, discardCard.x+(cardBaseWidth/6), discardCard.y+(cardBaseHeight/4));
 }
@@ -330,7 +330,6 @@ function game(numPlayers, gameMode, playerNames, compChecks){
 	for(let i = 0; i < numPlayers; i++){
 		playersArray.push(createPlayer(compChecks[i].checked, playerNames[i], Array(handLength)));
 	}
-	console.log(playersArray);
 	gameInstance = new Game(gameMode, drawPile, discardPile, playersArray);
 	gameInstance.init();
 }
@@ -449,13 +448,15 @@ function addCardListeners(e){
 		}
 		return;
 	}
-	for(let i = 0; i < cards.length; i++){
-		if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
-			selectCardDisplay(cards[i], gameInstance.currentPlayer.hand[i]);
+	for(let i = 0; i < gameInstance.cards.length; i++){
+		if(ctx.isPointInPath(gameInstance.cards[i].cell, e.offsetX, e.offsetY)){
+			selectCardDisplay(gameInstance.cards[i], gameInstance.currentPlayer.hand[i]);
+			console.log(gameInstance.cards);
+			console.log("current i value ", i);
 			gameInstance.handCardIndex = i;
 		}
 		else{
-			resetCardDisplay(cards[i], gameInstance.currentPlayer.hand[i]);
+			resetCardDisplay(gameInstance.cards[i], gameInstance.currentPlayer.hand[i]);
 		}
 	}
 	console.log(gameInstance.handCardIndex);
