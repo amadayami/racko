@@ -33,7 +33,7 @@ class Game{
 	init(){
 		setup(this);
 		enableTurnButtons(this);
-		addListeners(this);
+		canvas.addEventListener('click', addListeners);
 		updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
 		[this.draw, this.players] = dealCards(this.draw, this.players, this.draw.length/6);
 		this.currentCard = this.draw.pop();
@@ -423,36 +423,38 @@ function enableTurnButtons(instance){
 	});
 }
 
-function addListeners(instance){
-	canvas.addEventListener('click', function(e){
-		if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
-			if(!instance.cardDrawnThisTurn){
-				if(instance.draw.length === 0){
-					[instance.draw, instance.discard] = [instance.discard, instance.draw];
-					instance.drawPile = shuffle(instance.draw);
-					instance.currentCard = drawPile.pop();
-					updateBoard(instance);
-				}
-				else{
-					instance.discard.push(instance.currentCard);
-					instance.currentCard = instance.draw.pop();
-					updateBoard(instance);
-				}
-				instance.cardDrawnThisTurn = true;
-			}
-			return;
-		}
-		for(let i = 0; i < cards.length; i++){
-			if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
-				selectCardDisplay(cards[i], instance.currentPlayer.hand[i]);
-				instance.handCardIndex = i;
+function addListeners(e){
+	if(gameInstance === null){
+		console.log("gameInstance null");
+		return;
+	}
+	if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
+		if(!gameInstance.cardDrawnThisTurn){
+			if(gameInstance.draw.length === 0){
+				[gameInstance.draw, gameInstance.discard] = [gameInstance.discard, gameInstance.draw];
+				gameInstance.drawPile = shuffle(gameInstance.draw);
+				gameInstance.currentCard = drawPile.pop();
+				updateBoard(gameInstance);
 			}
 			else{
-				resetCardDisplay(cards[i], instance.currentPlayer.hand[i]);
+				gameInstance.discard.push(gameInstance.currentCard);
+				gameInstance.currentCard = gameInstance.draw.pop();
+				updateBoard(gameInstance);
 			}
+			gameInstance.cardDrawnThisTurn = true;
 		}
-		console.log(instance.handCardIndex);
-	});
+		return;
+	}
+	for(let i = 0; i < cards.length; i++){
+		if(ctx.isPointInPath(cards[i].cell, e.offsetX, e.offsetY)){
+			selectCardDisplay(cards[i], gameInstance.currentPlayer.hand[i]);
+			gameInstance.handCardIndex = i;
+		}
+		else{
+			resetCardDisplay(cards[i], gameInstance.currentPlayer.hand[i]);
+		}
+	}
+	console.log(gameInstance.handCardIndex);
 }
 
 function updatePlayerInfoDisp(name, points){
