@@ -33,7 +33,7 @@ class Game{
 	init(){
 		setup(this);
 		enableTurnButtons(this);
-		canvas.addEventListener('click', addListeners);
+		canvas.addEventListener('click', addCardListeners);
 		updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
 		[this.draw, this.players] = dealCards(this.draw, this.players, this.draw.length/6);
 		this.currentCard = this.draw.pop();
@@ -77,6 +77,8 @@ class Game{
 		this.winners = checkForWinners(this.players);
 		if(this.winners.length > 0){
 			updateWindowInfo(this, "game");
+			removeEventListener('click', addCardListeners);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			//close the game
 		}
 		else{
@@ -423,11 +425,13 @@ function enableTurnButtons(instance){
 	});
 }
 
-function addListeners(e){
+function addCardListeners(e){
 	if(gameInstance === null){
 		console.log("gameInstance null");
 		return;
 	}
+	console.log("this is e.offsetx ", e.offsetX);
+	console.log("this is e.offsety ", e.offsetY);
 	if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
 		if(!gameInstance.cardDrawnThisTurn){
 			if(gameInstance.draw.length === 0){
