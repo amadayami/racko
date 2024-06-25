@@ -14,7 +14,6 @@ var cardBaseHeight = cardBaseWidth*1.5;
 
 class Game{
 	constructor(gameMode, draw, discard, players){
-		console.log(players);
 		this.gameMode;
 		this.draw = draw;
 		this.discard = discard;
@@ -55,13 +54,10 @@ class Game{
 	}
 	async switchCard(){
 		console.log("switch card triggered");
-		console.log(this.handCardIndex);
 		if(this.handCardIndex !== -1){
-			console.log(this.handCardIndex);
 			let temp = this.currentPlayer.hand[this.handCardIndex];
 			this.currentPlayer.hand[this.handCardIndex] = this.currentCard;
 			this.currentCard = temp;
-			console.log(this.handCardIndex);
 			await this.nextTurn();
 		}
 		else console.log("No card selected.");
@@ -79,7 +75,6 @@ class Game{
 			updateWindowInfo(this, "game");
 			removeEventListener('click', addCardListeners);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			//close the game
 		}
 		else{
 			console.log("no winner yet");
@@ -166,7 +161,6 @@ function updateBoard(instance){
 	//draw values
 	ctx.font = "28px Atkinson-Bold";
 	ctx.fillStyle = "black";
-	console.log(instance.cards);
 	for(let i = 0; i < instance.currentPlayer.hand.length; i++){
 		ctx.fillText(instance.currentPlayer.hand[i], instance.cards[i].x+(cardBaseWidth/6), instance.cards[i].y+(cardBaseHeight/4));
 	}
@@ -228,7 +222,6 @@ function createPlayer(isComputer, name, hand){
 //Creates a player hand of given length
 function createHand(len){
 	let hand = new Array(len);
-	console.log(hand);
 	return hand;
 }
 
@@ -429,8 +422,6 @@ function addCardListeners(e){
 		console.log("gameInstance null");
 		return;
 	}
-	console.log("this is e.offsetx ", e.offsetX);
-	console.log("this is e.offsety ", e.offsetY);
 	if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
 		if(!gameInstance.cardDrawnThisTurn){
 			if(gameInstance.draw.length === 0){
@@ -451,15 +442,12 @@ function addCardListeners(e){
 	for(let i = 0; i < gameInstance.cards.length; i++){
 		if(ctx.isPointInPath(gameInstance.cards[i].cell, e.offsetX, e.offsetY)){
 			selectCardDisplay(gameInstance.cards[i], gameInstance.currentPlayer.hand[i]);
-			console.log(gameInstance.cards);
-			console.log("current i value ", i);
 			gameInstance.handCardIndex = i;
 		}
 		else{
 			resetCardDisplay(gameInstance.cards[i], gameInstance.currentPlayer.hand[i]);
 		}
 	}
-	console.log(gameInstance.handCardIndex);
 }
 
 function updatePlayerInfoDisp(name, points){
