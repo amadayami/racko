@@ -70,6 +70,7 @@ class Game{
 	}
 	async switchCard(){
 		console.log("switch card triggered");
+		console.log(`switching card at index ${this.handCardIndex} for currentCard ${this.currentCard}`);
 		if(this.handCardIndex !== -1){
 			let temp = this.currentPlayer.hand[this.handCardIndex];
 			this.currentPlayer.hand[this.handCardIndex] = this.currentCard;
@@ -120,7 +121,63 @@ class Game{
 			this.cardDrawnThisTurn = false;
 			updatePlayerInfoDisp(this.currentPlayer.name, this.currentPlayer.points);
 			updateBoard(this);
-			//if computer player, then do computer stuff and go to next turn
+			if(this.currentPlayer.isComputer === true){
+				console.log(this.currentPlayer);
+				console.log("Computer player " + this.currentPlayer.name + " moving");
+				updateWindowInfo(this, "computer");
+				this.computerTurn();
+			}
+		}
+	}
+	computerTurn(){
+		let slot = Math.ceil(this.currentCard/6);
+		if(Math.ceil(this.currentPlayer.hand[slot-1]/6) === slot){
+			//then the slot is filled, check the surrounding spaces
+			if(slot-2 >= 0 
+				&& this.currentCard < this.currentPlayer.hand[slot-1] 
+				&& Math.ceil(this.currentPlayer.hand[slot-2]/6) !== slot-1){
+				console.log("below free");
+				this.handCardIndex = slot-2;
+				this.switchCard();
+			}
+			else if(slot <= this.currentPlayer.hand.length-1 
+				&& this.currentCard > this.currentPlayer.hand[slot-1] 
+				&& Math.ceil(this.currentPlayer.hand[slot]/6) !== slot+1){
+					console.log("above free");
+					this.handCardIndex = slot;
+					this.switchCard();
+			}
+			else{
+				this.drawCard();
+				console.log("Drawing new card");
+				slot = Math.ceil(this.currentCard/6);
+				if(Math.ceil(this.currentPlayer.hand[slot-1]/6) === slot){
+					if(slot-2 >= 0
+						&& this.currentCard < this.currentPlayer.hand[slot-1]
+						&& Math.ceil(this.currentPlayer.hand[slot-2]/6) !== slot-1){
+							this.handCardIndex = slot-2;
+							this.switchCard();
+					}
+					else if(slot < this.currentPlayer.hand.length-1
+						&& this.currentCard > this.currentPlayer.hand[slot-1]
+						&& Math.ceil(this.currentPlayer.hand[slot]/6) !== slot+1){
+							this.handCardIndex = slot;
+							this.switchCard();
+					}
+					else{
+						console.log("No switch found");
+						this.nextTurn();
+					}
+				}
+				else{
+					this.handCardIndex = slot-1;
+					this.switchCard();
+				}
+			}
+		}
+		else{
+			this.handCardIndex = slot-1;
+			this.switchCard();
 		}
 	}
 }
@@ -469,6 +526,9 @@ function updateWindowInfo(instance, type){
 	if(type === "hand"){
 		updateWindowTitle.innerText = `${instance.currentPlayer.name} wins the hand!`;
 		updateWindowDetails.innerText = "Resetting deck...";
+		setInterval(() => {
+			gameUpdateWindow.style.display = "none";
+		}, 3500);
 	}
 	else if(type === "game"){
 		let scoreStr = "Final scores:\n";
@@ -487,9 +547,16 @@ function updateWindowInfo(instance, type){
 			updateWindowTitle.innerText = `${winnerNames}win the game!`;
 		}
 		else console.log("issue with displaying winners");
+		setInterval(() => {
+			gameUpdateWindow.style.display = "none";
+		}, 3500);
+	}
+	else if(type === "computer"){
+		updateWindowTitle.innerText = `${instance.currentPlayer.name} is moving...`;
+		updateWindowDetails.innerText = "computer thinking...";
+		setInterval(() => {
+			gameUpdateWindow.style.display = "none";
+		}, 2500);
 	}
 	else console.log("unrecognized update type");
-	setInterval(() => {
-		gameUpdateWindow.style.display = "none";
-	}, 4000);
 }
