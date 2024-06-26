@@ -38,6 +38,22 @@ class Game{
 		this.currentCard = this.draw.pop();
 		updateBoard(this);
 	};
+	drawCard(){
+		if(!this.cardDrawnThisTurn){
+			if(this.draw.length === 0){
+				[this.draw, this.discard] = [this.discard, this.draw];
+				this.draw = shuffle(this.draw);
+				this.currentCard = this.draw.pop();
+				updateBoard(this);
+			}
+			else{
+				this.discard.push(this.currentCard);
+				this.currentCard = this.draw.pop();
+				updateBoard(this);
+			}
+			this.cardDrawnThisTurn = true;
+		}
+	}
 	resetDeck(){
 		this.draw = this.draw.concat(this.discard);
 		this.draw.push(this.currentCard);
@@ -423,20 +439,7 @@ function addCardListeners(e){
 		return;
 	}
 	if(ctx.isPointInPath(drawCard.cell, e.offsetX, e.offsetY)){
-		if(!gameInstance.cardDrawnThisTurn){
-			if(gameInstance.draw.length === 0){
-				[gameInstance.draw, gameInstance.discard] = [gameInstance.discard, gameInstance.draw];
-				gameInstance.drawPile = shuffle(gameInstance.draw);
-				gameInstance.currentCard = drawPile.pop();
-				updateBoard(gameInstance);
-			}
-			else{
-				gameInstance.discard.push(gameInstance.currentCard);
-				gameInstance.currentCard = gameInstance.draw.pop();
-				updateBoard(gameInstance);
-			}
-			gameInstance.cardDrawnThisTurn = true;
-		}
+		gameInstance.drawCard();
 		return;
 	}
 	for(let i = 0; i < gameInstance.cards.length; i++){
