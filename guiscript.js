@@ -14,7 +14,7 @@ var cardBaseHeight = cardBaseWidth*1.5;
 
 class Game{
 	constructor(gameMode, draw, discard, players){
-		this.gameMode;
+		this.gameMode = gameMode;
 		this.draw = draw;
 		this.discard = discard;
 		this.players = players;
