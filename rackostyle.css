@@ -115,7 +115,15 @@
 
 .modal-content *{
 	font-family: "Atkinson-Bold";
+}
+
+.modal-content > h1{
 	text-align: center;
+}
+
+.modal-content > p{
+	font-size: 1.5em;
+	font-family: "Atkinson";
 }
 
 .modal-content > ol > li{
@@ -130,6 +138,8 @@
 
 .inner-p{
 	margin: 5px;
+	font-size: 1.5em;
+	font-family: "Atkinson";
 }
 
 input[type="radio"]{
