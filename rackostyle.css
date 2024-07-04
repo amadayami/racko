@@ -131,6 +131,10 @@
 	margin-top: 10px;
 }
 
+#promptWindow > *{
+	text-align: center;
+}
+
 #modal-title{
 	font-family: "Bonk-Offset";
 	font-size: 1.2em;

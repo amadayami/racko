@@ -352,9 +352,11 @@ function validateGameState(){
 		console.log("Game mode not selected.");
 	}
 	else{
+		let regex = new RegExp(/[^\w\s]/g);
 		playerNames = [];
 		let textBoxes = document.querySelectorAll('input[type="text"]');
 		for(let i = 0; i < numPlayers; i++){
+			textBoxes[i].value = textBoxes[i].value.replace(regex, '');
 			if(textBoxes[i].value == "" || textBoxes[i].length == 0 || textBoxes[i] == null){
 				console.log("Missing player name");
 				return;
